@@ -1,0 +1,10 @@
+extends ../layout
+
+block content
+  .container
+    form(enctype="multipart/form-data", method="POST", action="/")
+      input.source(type="file", name="filename",required="required")
+      button.btn.btn-primary(type="submit") 上传
+      div= msg
+
+  script(src="/js/index.js")

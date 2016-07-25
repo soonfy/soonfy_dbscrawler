@@ -1,0 +1,41 @@
+{
+  "name": "soonfy_videosite",
+  "version": "0.0.1",
+  "description": "输入视频任意一集的播放页面，采集该视频的播放/评论数量",
+  "main": "app.js",
+  "dependencies": {
+    "async": "^1.5.0",
+    "bcrypt": "^0.8.5",
+    "body-parser": "^1.14.1",
+    "bootstrap": "^3.3.5",
+    "cheerio": "^0.19.0",
+    "connect-mongo": "^0.8.2",
+    "cookie-parser": "^1.4.0",
+    "express": "^4.13.3",
+    "express-session": "^1.12.1",
+    "formidable": "^1.0.17",
+    "iconv": "^2.2.1",
+    "jade": "^1.11.0",
+    "jquery": "^2.1.4",
+    "json2csv": "^3.0.1",
+    "mime": "^1.3.4",
+    "moment": "^2.10.6",
+    "mongoose": "^4.2.5",
+    "morgan": "^1.6.1",
+    "node-schedule": "^1.1.1",
+    "path": "^0.12.7",
+    "request": "^2.67.0"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-concurrent": "^2.0.4",
+    "grunt-contrib-nodemon": "^0.5.2",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-nodemon": "^0.4.0",
+    "iconv-lite": "^0.4.13"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT"
+}

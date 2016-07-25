@@ -1,0 +1,54 @@
+.nav {
+    margin-bottom: 10px
+}
+
+.row {
+    margin-bottom: 10px
+}
+
+.myAlert {
+    margin-bottom: 0px
+}
+
+.op .btn {
+    margin-right: 10px;
+    margin-top: -6px;
+    margin-left: 10px;
+}
+
+.form-group .btn {
+    margin-right: 10px
+}
+
+th,
+td {
+    text-align: center;
+    word-break: keep-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.list {
+    margin-bottom: 70px;
+}
+
+.track td:not(.op):not(.time) {
+    max-width: 120px
+}
+
+.op {
+    width: 50px
+}
+
+.checkbox {
+    margin: 0px -15px 0 15px;
+}
+
+.all {
+    height: 10px
+}
+
+.source{
+    padding-bottom: 20px
+}

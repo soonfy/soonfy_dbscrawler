@@ -1,0 +1,83 @@
+extends ../layout
+
+block content
+    .container
+        .row.col-xs-12
+            form.form-horizontal(method="get", action="/movie/search")
+                .form-group
+                    .col-xs-3                          
+                    .col-xs-5
+                        input.form-control.resource(type="text" name="q" value="" placeholder="请输入名称")
+                    .col-xs-4
+                        button.btn.btn-primary(type="submit") 查找
+                        .btn.btn-primary.export 导出(剧目)
+                        .btn.btn-primary.vexport 导出(剧集)
+        .row.col-xs-12
+            table.table.table-hover.table-border.list.track
+                thead
+                    tr
+                        th 
+                        th.col-xs-1 视频网站
+                        th.col-xs-1 剧目类型
+                        th.col-xs-2 剧目名称
+                        th.col-xs-3 剧集名称
+                        th.col-xs-1 剧目播放量
+                        th.col-xs-1 剧集播放量
+                        th.col-xs-1 剧目评论量
+                        th.col-xs-1 剧集评论量
+                        th.col-xs-2 更新时间
+                        th 操作
+                tbody
+                    if movies.length > 0
+                        tr
+                            td
+                                label.checkbox.all 
+                                    input(type="checkbox") 
+                            td 
+                            td
+                            td
+                            td
+                            td
+                            td
+                            td
+                            td
+                            td
+                            td.op
+                                .btn.btn-danger.btn-sm.del 删除
+                    each item in movies
+                        tr(class="item-id-#{item._id}")
+                            input(type="hidden" name="url" value=item.url)
+                            td
+                                label.checkbox
+                                    input(type="checkbox" name="subBox")
+                            td #{item.site}
+                            td #{item.type}
+                            td
+                                span(title="#{item.title}") #{item.title}
+                            td
+                                span(title="#{item.name}") #{item.name}
+                            td #{item.playSumCount}
+                            td #{item.playCount}
+                            td #{item.commentSumCount}
+                            td #{item.commentCount}
+                            td.time #{moment(item.createAt).format('YYYY-MM-DD HH:mm:ss')}
+                            td.op
+                                .btn.btn-danger.btn-sm.del(data-id="#{item._id}") 删除
+                    if movies.length > 0
+                        tr
+                            td
+                                label.checkbox.all 
+                                    input(type="checkbox") 
+                            td 
+                            td
+                            td
+                            td
+                            td
+                            td
+                            td
+                            td
+                            td
+                            td.op
+                                .btn.btn-danger.btn-sm.del 删除
+    script(src="/js/movie.js")
+    script(src="/js/export.js")
