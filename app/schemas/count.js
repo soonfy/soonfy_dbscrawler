@@ -22,6 +22,8 @@ var CountSchema = new Schema({
   },
   playSum: Number,                                           //剧目播放量
   commentSum: Number,                                           //剧目评论量
+  up: Number,
+  down: Number,
   createdAt:  {                                                    //采集时间
       type: Date,
       index: true

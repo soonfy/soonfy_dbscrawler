@@ -108,17 +108,20 @@ var parseData = function(){
   })
 }
 
+//测试采集
+
 // parseData()
 
 /**
  * 定时任务，5个小时采集一次
  * @method RecurrenceRule
  */
-// var rule = new schedule.RecurrenceRule()
-// var timer = schedule.scheduleJob('0 0 */5 * * *', function () {
-//   console.log('下一次采集开始。');
-//   parseData()
-// })
+//
+//
+var rule = new schedule.RecurrenceRule()
+var timer = schedule.scheduleJob('0 0 */4 * * *', function () {
+  parseData()
+})
 
 exports.search = function(req, res) {
     var q = req.query.q;

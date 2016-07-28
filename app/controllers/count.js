@@ -32,8 +32,9 @@ var countSum = function(){
 
     //
     // 测试汇总
-    // start = '2016-7-26 00:00:00'
-    // end = '2016-7-27 00:00:00'
+    //
+    // start = '2016-7-28 00:00:00'
+    // end = '2016-7-29 00:00:00'
 
   async.parallel([
 
@@ -181,13 +182,17 @@ var countSum = function(){
   })
 }
 
+//测试汇总
+
 // countSum()
 
 /**
  * 定时任务，每天1点汇总一次
  * @method RecurrenceRule
  */
-// var rule = new schedule.RecurrenceRule()
-// var timer = schedule.scheduleJob('0 0 1 */1 * *', function () {
-//   countSum()
-// })
+
+
+var rule = new schedule.RecurrenceRule()
+var timer = schedule.scheduleJob('0 0 1 */1 * *', function () {
+  countSum()
+})

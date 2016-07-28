@@ -11,4 +11,4 @@ var getScore = function (_id) {
     })
 }
 
-getScore('5794c5aab0b0546424ec0eee')
+// getScore('5794c5aab0b0546424ec0eee')

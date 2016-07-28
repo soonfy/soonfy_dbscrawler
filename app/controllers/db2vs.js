@@ -1070,9 +1070,17 @@ var dbfind = function () {
     })
 }
 
+//测试对应数据
+//
+//dbfind()
+
 /**
  * 执行对应程序
  * @method dbfind
  * @return {[type]} [description]
  */
-// dbfind()
+
+ var rule = new schedule.RecurrenceRule()
+ var timer = schedule.scheduleJob('0 0 */7 * * *', function () {
+   dbfind()
+ })
