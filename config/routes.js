@@ -5,6 +5,7 @@ var Count = require('../app/controllers/count')                       //汇总�
 var Expshows = require('../app/controllers/explist')                 //导出剧目
 var Expshow = require('../app/controllers/expshow')                 //导出剧集
 var File = require('../app/controllers/file')
+var plugins = require('../app/controllers/plugins')
 
 module.exports = function(app) {
 
@@ -17,7 +18,7 @@ module.exports = function(app) {
     app.get('/movie/search', Movie.search)
     app.get('/movie/list', Movie.list)
     app.delete('/movie/list', Movie.del)
-    app.get('/movie/export', Expshows.down)                  //导出剧目
+    // app.get('/movie/export', Expshows.down)                  //导出剧目
     app.get('/movie/vexport', Expshow.down)                 //导出剧集
 
     //下载文件

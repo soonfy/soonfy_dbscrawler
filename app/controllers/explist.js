@@ -4,84 +4,109 @@
     *
 */
 
-var async = require('async')
-var json2csv = require('json2csv')
-var fs = require('fs')
-var path = require('path')
-var iconv = new require('iconv').Iconv('UTF-8', 'GBK//IGNORE')
-
 var Count = require('../models/count')
 
-//导出播放
-var exportSumCount = function(fileday){
-
-  async.parallel([
-    //测试每个月13号
-    function(cb){
-      Count
-        .find({udate: /^\d{4}\-\d{2}\-16/i}, function(err, list_data){
-        //   console.log(list_data)
-          cb(null, list_data)
-        })
-    },
-    // //每个月15号
-    // function(cb){
-    //   Count
-    //     .find({uid: {'$in': uids}, udate: /^\d{4}\-\d{2}\-15/i}, function(err, list_data){
-    //     //   console.log(list_data)
-    //       cb(null, list_data)
-    //     })
-    // },
-    // //每个月30号
-    // function(cb){
-    //   Count
-    //     .find({uid: {'$in': uids}, udate: /^\d{4}\-\d{2}\-30/i}, function(err, list_data){
-    //     //   console.log(list_data)
-    //       cb(null, list_data)
-    //     })
-    // }
-  ], function(err, results){
-
-    //二维数组转换为一维
-    var list_result = []
-    results.forEach(function(_result){
-      list_result = list_result.concat(_result)
-    })
-
-    //数组转换为csv
-    var fields = ['udate', 'uid', 'uname', 'site', 'utype', 'playSumCount', 'commentSumCount']
-    var fieldNames = ['日期', 'ID', '剧目名称', '视频网站', '剧目类型', '剧目播放量', '剧目评论量']
-    json2csv({data: list_result, fields: fields, fieldNames: fieldNames}, function(err, csv){
-        if(err){
-          console.log(err)
+/**
+ * 导出起止时间段的剧目汇总数据
+ * @method export_vscount
+ * @param  {[type]}       ids   [剧目id数组]
+ * @param  {[type]}       st    [起始时间点]
+ * @param  {[type]}       et    [终止时间点]
+ * @param  {[type]}       sites [网站数组]
+ * @return {[type]}             [导出起止时间段剧目汇总数据的数组]
+ */
+var export_vscount = function (ids, st, et, sites) {
+  let start = typeof st === 'string' ? new Date(st) : st
+  let end = typeof et === 'string' ? new Date(et) : et
+  start = start.setHours(0, 0, 0) - 1000 * 60 * 60 * 24
+  end = end.setHours(23, 59, 59)
+  Count
+    .find({filmId: {'$in': ids}, site: {'$in': sites}, createdAt: {'$gte': start, '$lte': end}}, {filmId: 1, playSum: 1, site: 1, createdAt: 1, _id: 0}, function(err, playSums){
+      // console.log(playSums)
+      let results = []                  //存储最后结果
+      let hids = []                     //存储已处理id
+      let hidsites = []                  //存储已处理id+site
+      playSums.forEach(function (_playSum) {
+        var id = _playSum.filmId
+        var site = _playSum.site
+        var playSum = _playSum.playSum
+        if(hids.indexOf(id) === -1){
+          // console.log(id + ' is first time.');
+          //初次处理该id
+          let temp = {}
+          temp._id = id
+          //插入keywords
+          // temp.keyword = keyword
+          temp.series = {}
+          temp.series[site] = []
+          temp.series[site].push(playSum)
+          hids.push(id)
+          hidsites.push(id+site)
+          results.push(temp)
+        }else if(hidsites.indexOf(id+site) === -1){
+          // console.log(id + ' is not first time, ' + site + ' is first time.');
+          //再次处理该id，初次处理该id+site
+          results.forEach(function (_result, _index) {
+            if(_result._id === id){
+              hids.push(id)
+              hidsites.push(id+site)
+              _result.series[site] = []
+              _result.series[site].push(playSum)
+            }
+          })
+        }else{
+          // console.log(id + ' and ' + site + ' are not first time.');
+          //再次处理该id，再次处理该id+site
+          results.forEach(function (_result, _index) {
+            if(_result._id === id){
+              for(let attr in _result.series){
+                if(attr === site){
+                  // console.log(site);
+                  _result.series[attr].push(playSum)
+                  return
+                }
+              }
+            }
+          })
         }
-        // console.log(csv)
-        var filename = fileday + '_剧目汇总数据' + '.csv'
-        fs.writeFile(path.join(__dirname, 'data', fileday, filename), iconv.convert(csv), 'utf8', function(err){
-          if(err){
-            console.log(err)
-          }else{
-            console.log(fileday +'剧目汇总数据导出成功。')
-          }
-
-        })
       })
-  })
+      // console.log(results)
+      // 排序并计算日播放量
+      results.forEach(function (_result) {
+        var sites = _result.series
+        for(var site in sites){
+          var temp = sites[site]
+          //从小到大排序
+          temp = temp.sort(function (a, b) {
+            return a - b
+          })
+          // console.log(temp);
+          var dplay = []
+          //计算日播放量
+          temp.forEach(function (_playSum, _index) {
+            if(_index > 0){
+              dplay.push(_playSum - temp[_index - 1])
+            }
+          })
+          // console.log(dplay);
+          // 覆盖网站总播放量
+          sites[site] = dplay
+        }
+      })
+      // console.log(results[1].series['爱奇艺视频'])
+      // 添加keyword
+      // results.forEach(function (_res) {
+      //   // 读取schema_film的name属性
+      //   _res.keyword = _res.film().name
+      // })
+      // console.log(results);
+      return results
+    })
 }
 
-//点击导出剧目
-exports.down = function(){
-  var filetime = new Date()
-  var fileyear = filetime.getFullYear()
-  var filemonth = filetime.getMonth() + 1
-  var filedate = filetime.getDate()
-  var fileday ='' + fileyear + '-' + filemonth + '-' + filedate
-  // console.log(fileday)
-
-  //生成目录
-  if(!fs.existsSync(__dirname + '/data/' + fileday)){
-    fs.mkdirSync(__dirname + '/data/' + fileday)
-  }
-
-  exportSumCount(fileday)
-}
+var ids = ['57948c1fb0b0546424ec0ed6', '579488acb0b0546424ec0ed5']
+var st = '2016-7-24'
+var et = '2016-7-27'
+var sites = ['爱奇艺视频', '腾讯视频', '乐视视频', '搜狐视频', '优酷视频', '土豆视频', '芒果视频']
+//测试数据导出
+// export_vscount(ids, st, et, sites)

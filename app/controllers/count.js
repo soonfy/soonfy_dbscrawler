@@ -27,30 +27,20 @@ var countdate = function (day) {
 var countSum = function(){
 
     var date = new Date()
-    var time = date.getTime()
-    // console.log(time);
-    var today = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' 00:00:00'
-    // console.log(todayid)
-    // console.log(today)
-    var lasttime = new Date(time - 86400000)
-    var lastdate = new Date(lasttime)
-    var lastday = lastdate.getFullYear() + '-' + (lastdate.getMonth() + 1) + '-' + lastdate.getDate() + ' 00:00:00'
-    // console.log(lastday)
+    var end = date.setHours(0, 0, 0)
+    var start = end - 1000 * 60 * 60 * 24
+
     //
     // 测试汇总
-    // today = '2016-7-26 00:00:00'
-    // lastday = '2016-7-25 00:00:00'
-
-    var monthid = (date.getMonth() + 1) > 9 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1)
-    var dayid = date.getDate() > 9 ? date.getDate() : '0' + date.getDate()
-    var todayid = '' + date.getFullYear() +  monthid + dayid
+    // start = '2016-7-26 00:00:00'
+    // end = '2016-7-27 00:00:00'
 
   async.parallel([
 
     //爱奇艺非电影类剧目播放，评论
     function(cb){
       Movie
-        .find({site: {'$in': ['爱奇艺视频']}, createdAt: {'$gte': lastday, '$lt': today}}, {filmId: 1, name: 1, play: 1, comment: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
+        .find({site: {'$in': ['爱奇艺视频']}, createdAt: {'$gte': start, '$lt': end}}, {filmId: 1, name: 1, play: 1, comment: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
           // console.log(list_data)
           var filmIds = []
           var results = []
@@ -87,7 +77,7 @@ var countSum = function(){
     //腾讯，搜狐非电影类剧目评论
     function(cb){
       Movie
-        .find({site: {'$in': ['腾讯视频', '搜狐视频']}, createdAt: {'$gte': lastday, '$lt': today}}, {filmId: 1, name: 1, comment: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
+        .find({site: {'$in': ['腾讯视频', '搜狐视频']}, createdAt: {'$gte': start, '$lt': end}}, {filmId: 1, name: 1, comment: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
         //   console.log(list_data)
           var filmIds = []
           var results = []
@@ -118,7 +108,7 @@ var countSum = function(){
     //优酷，土豆,芒果非电影类剧目播放，评论
     function(cb){
       Movie
-        .find({site: {'$in': ['优酷视频', '芒果视频', '土豆视频']}, createdAt: {'$gte': lastday, '$lt': today}}, {filmId: 1, name: 1, play: 1, comment: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
+        .find({site: {'$in': ['优酷视频', '芒果视频', '土豆视频']}, createdAt: {'$gte': start, '$lt': end}}, {filmId: 1, name: 1, play: 1, comment: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
         //   console.log(list_data)
           var filmIds = []
           var results = []
@@ -197,7 +187,7 @@ var countSum = function(){
  * 定时任务，每天1点汇总一次
  * @method RecurrenceRule
  */
-var rule = new schedule.RecurrenceRule()
-var timer = schedule.scheduleJob('0 0 1 */1 * *', function () {
-  countSum()
-})
+// var rule = new schedule.RecurrenceRule()
+// var timer = schedule.scheduleJob('0 0 1 */1 * *', function () {
+//   countSum()
+// })

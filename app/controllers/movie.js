@@ -1,7 +1,7 @@
 /**
     *
     *   视频网站采集主文件
-    *   
+    *
     *
 */
 
@@ -108,17 +108,17 @@ var parseData = function(){
   })
 }
 
-parseData()
+// parseData()
 
 /**
  * 定时任务，5个小时采集一次
  * @method RecurrenceRule
  */
-var rule = new schedule.RecurrenceRule()
-var timer = schedule.scheduleJob('0 0 */5 * * *', function () {
-  console.log('下一次采集开始。');
-  parseData()
-})
+// var rule = new schedule.RecurrenceRule()
+// var timer = schedule.scheduleJob('0 0 */5 * * *', function () {
+//   console.log('下一次采集开始。');
+//   parseData()
+// })
 
 exports.search = function(req, res) {
     var q = req.query.q;
