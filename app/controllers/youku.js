@@ -134,14 +134,15 @@ var parseMV = function(vid, filmId, url){
                     var $ = cheerio.load(body)
                     var upSum = parseInt($($('div.fn-up')[0]).text().replace(/,/g, ''))
                     var downSum = parseInt($($('div.fn-down')[0]).text().replace(/,/g, ''))
+                    cb(null, play, playSum, comment, commentSum, upSum, downSum)
                 }else{
-                        console.log('优酷采集' + filmId + '播放数量出错。')
+                        console.log('优酷采集' + filmId + '赞踩数量出错。')
                     }
             })
             timer.cancel()
           })
         },
-        function(play, playSum, comment, commentSum, cb){
+        function(play, playSum, comment, commentSum, upSum, downSum cb){
           var _count
           var _id = '优酷视频' + getTodayid() + filmId
           Count.findOne({_id: _id}, {_id: 1}, function(err, result){
@@ -149,6 +150,8 @@ var parseMV = function(vid, filmId, url){
                   _count = new Count({
                       playSum: playSum,
                       commentSum: commentSum,
+                      upSum: upSum,
+                      downSum: downSum,
                       site: '优酷视频',
                       createdAt: Date.now(),
                       filmId: filmId,
