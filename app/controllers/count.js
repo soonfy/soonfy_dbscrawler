@@ -38,36 +38,110 @@ var countSum = function(){
 
   async.parallel([
 
-    //爱奇艺非电影类剧目播放，评论
+    //爱奇艺非电影类剧目播放，评论，赞踩
     function(cb){
       Movie
-        .find({site: {'$in': ['爱奇艺视频']}, createdAt: {'$gte': start, '$lt': end}}, {filmId: 1, name: 1, play: 1, comment: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
+        .find({site: {'$in': ['爱奇艺视频']}, createdAt: {'$gte': start, '$lt': end}}, {filmId: 1, play: 1, comment: 1, up: 1, down: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
+          console.log(list_data)
+          // console.log(results)
+          // throw new Error()
+          var filmIds = []
+          var results = []
+          list_data.forEach(function (_data) {
+              if(filmIds.indexOf(_data.site + _data.filmId) === -1){
+                // console.log(-1);
+                  filmIds.push(_data.site + _data.filmId)
+                  var temp = {}
+                  temp.filmId = _data.filmId
+                  temp.site = _data.site
+                  temp.playSum = _data.play
+                  temp.commentSum = _data.comment
+                  temp.upSum = _data.up
+                  temp.downSum = _data.down
+                  temp.createdAt = _data.createdAt
+                  temp._id = _data.site + countdate(_data.createdAt) + _data.filmId
+                  // console.log(temp);
+                  results.push(temp)
+              }else{
+                  results.forEach(function (_result, _index) {
+                      if(_result.filmId === _data.filmId && _result.site === _data.site){
+                          results[_index].playSum = _result.playSum + _data.play
+                          results[_index].commentSum = _result.commentSum + _data.comment
+                          results[_index].upSum = _result.upSum + _data.up
+                          results[_index].downSum = _result.downSum + _data.down
+                      }
+                  })
+              }
+          })
+          // console.log(results)
+          // throw new Error()
+          cb(null, results)
+        })
+    },
+
+    //腾讯，搜狐非电影类剧目评论，赞踩
+    function(cb){
+      Movie
+        .find({site: {'$in': ['腾讯视频', '搜狐视频']}, createdAt: {'$gte': start, '$lt': end}}, {filmId: 1, comment: 1, up: 1, down: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
+        //   console.log(list_data)
+          var filmIds = []
+          var results = []
+          list_data.forEach(function (_data) {
+              if(filmIds.indexOf(_data.site + _data.filmId) === -1){
+                  filmIds.push(_data.site + _data.filmId)
+                  var temp = {}
+                  temp.filmId = _data.filmId
+                  temp.site = _data.site
+                  temp.commentSum = _data.comment
+                  temp.upSum = _data.up
+                  temp.downSum = _data.down
+                  temp.createdAt = _data.createdAt
+                  temp._id = _data.site + countdate(_data.createdAt) + _data.filmId
+                  // console.log(temp);
+                  results.push(temp)
+              }else{
+                  var temp2 = {}
+                  results.forEach(function (_result, _index) {
+                    if(_result.filmId === _data.filmId && _result.site === _data.site){
+                        results[_index].commentSum = _result.commentSum + _data.comment
+                        results[_index].upSum = _result.upSum + _data.up
+                        results[_index].downSum = _result.downSum + _data.down
+                    }
+                  })
+              }
+          })
+          // console.log(results)
+          cb(null, results)
+        })
+    },
+
+    //乐视非电影类剧目赞踩
+    function(cb){
+      Movie
+        .find({site: {'$in': ['乐视视频']}, createdAt: {'$gte': start, '$lt': end}}, {filmId: 1, up: 1, down: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
           // console.log(list_data)
           var filmIds = []
           var results = []
           list_data.forEach(function (_data) {
               if(filmIds.indexOf(_data.site + _data.filmId) === -1){
-                  filmIds.push(_data.site + _data.filmId)
-                  var temp = _data
-                  if(_data.play){
-                    temp.playSum = _data.play
-                  }
-                  temp.commentSum = _data.comment
-                  temp._id = _data.site + countdate(_data.createdAt) + _data.filmId
-                  results.push(temp)
+                filmIds.push(_data.site + _data.filmId)
+                var temp = {}
+                temp.filmId = _data.filmId
+                temp.site = _data.site
+                temp.upSum = _data.up
+                temp.downSum = _data.down
+                temp.createdAt = _data.createdAt
+                temp._id = _data.site + countdate(_data.createdAt) + _data.filmId
+                // console.log(temp);
+                results.push(temp)
               }else{
                   var temp2 = {}
                   results.forEach(function (_result, _index) {
-                      if(_result.filmId === _data.filmId && _result.site === _data.site){
-                          temp2 = _result
-                          results.splice(_index, 1)
-                      }
+                    if(_result.filmId === _data.filmId && _result.site === _data.site){
+                        results[_index].upSum = _result.upSum + _data.up
+                        results[_index].downSum = _result.downSum + _data.down
+                    }
                   })
-                  if(_data.play){
-                    temp2.playSum += _data.play
-                  }
-                  temp2.commentSum += _data.comment
-                  results.push(temp2)
               }
           })
           // console.log(results)
@@ -75,30 +149,33 @@ var countSum = function(){
         })
     },
 
-    //腾讯，搜狐非电影类剧目评论
+    //土豆非电影类剧目播放，评论
     function(cb){
       Movie
-        .find({site: {'$in': ['腾讯视频', '搜狐视频']}, createdAt: {'$gte': start, '$lt': end}}, {filmId: 1, name: 1, comment: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
+        .find({site: {'$in': ['土豆视频']}, createdAt: {'$gte': start, '$lt': end}}, {filmId: 1, play: 1, comment: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
         //   console.log(list_data)
           var filmIds = []
           var results = []
           list_data.forEach(function (_data) {
               if(filmIds.indexOf(_data.site + _data.filmId) === -1){
-                  filmIds.push(_data.site + _data.filmId)
-                  var temp = _data
-                  temp.commentSum = _data.comment
-                  temp._id = _data.site + countdate(_data.createdAt) + _data.filmId
-                  results.push(temp)
+                filmIds.push(_data.site + _data.filmId)
+                var temp = {}
+                temp.filmId = _data.filmId
+                temp.site = _data.site
+                temp.playSum = _data.play
+                temp.commentSum = _data.comment
+                temp.createdAt = _data.createdAt
+                temp._id = _data.site + countdate(_data.createdAt) + _data.filmId
+                // console.log(temp);
+                results.push(temp)
               }else{
                   var temp2 = {}
                   results.forEach(function (_result, _index) {
-                      if(_result.filmId === _data.filmId && _result.site === _data.site){
-                          temp2 = _result
-                          results.splice(_index, 1)
-                      }
+                    if(_result.filmId === _data.filmId && _result.site === _data.site){
+                      results[_index].playSum = _result.playSum + _data.play
+                      results[_index].commentSum = _result.commentSum + _data.comment
+                    }
                   })
-                  temp2.commentSum += _data.comment
-                  results.push(temp2)
               }
           })
           // console.log(results)
@@ -106,32 +183,37 @@ var countSum = function(){
         })
     },
 
-    //优酷，土豆,芒果非电影类剧目播放，评论
+    //优酷，芒果非电影类剧目播放，评论，赞踩
     function(cb){
       Movie
-        .find({site: {'$in': ['优酷视频', '芒果视频', '土豆视频']}, createdAt: {'$gte': start, '$lt': end}}, {filmId: 1, name: 1, play: 1, comment: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
+        .find({site: {'$in': ['优酷视频', '芒果视频']}, createdAt: {'$gte': start, '$lt': end}}, {filmId: 1, play: 1, comment: 1, up: 1, down: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
         //   console.log(list_data)
           var filmIds = []
           var results = []
           list_data.forEach(function (_data) {
               if(filmIds.indexOf(_data.site + _data.filmId) === -1){
-                  filmIds.push(_data.site + _data.filmId)
-                  var temp = _data
-                  temp.playSum = _data.play
-                  temp.commentSum = _data.comment
-                  temp._id = _data.site + countdate(_data.createdAt) + _data.filmId
-                  results.push(temp)
+                filmIds.push(_data.site + _data.filmId)
+                var temp = {}
+                temp.filmId = _data.filmId
+                temp.site = _data.site
+                temp.playSum = _data.play
+                temp.commentSum = _data.comment
+                temp.upSum = _data.up
+                temp.downSum = _data.down
+                temp.createdAt = _data.createdAt
+                temp._id = _data.site + countdate(_data.createdAt) + _data.filmId
+                // console.log(temp);
+                results.push(temp)
               }else{
                   var temp2 = {}
                   results.forEach(function (_result, _index) {
-                      if(_result.filmId === _data.filmId && _result.site === _data.site){
-                          temp2 = _result
-                          results.splice(_index, 1)
-                      }
+                    if(_result.filmId === _data.filmId && _result.site === _data.site){
+                      results[_index].playSum = _result.playSum + _data.play
+                      results[_index].commentSum = _result.commentSum + _data.comment
+                      results[_index].upSum = _result.upSum + _data.up
+                      results[_index].downSum = _result.downSum + _data.down
+                    }
                   })
-                  temp2.playSum += _data.play
-                  temp2.commentSum += _data.comment
-                  results.push(temp2)
               }
           })
           // console.log(results)
@@ -141,12 +223,12 @@ var countSum = function(){
   ], function(err, res){
       if(!err){
 
-          //合并3次统计
+          //合并统计
           var counts = []
           res.forEach(function (_res, _index) {
             counts = counts.concat(_res)
           })
-        //   console.log(counts)
+          console.log(counts)
 
           //写入数据库
           counts.forEach(function (_data) {
@@ -157,6 +239,8 @@ var countSum = function(){
                       _count = new Count({
                           playSum: _data.playSum,
                           commentSum: _data.commentSum,
+                          upSum: _data.upSum,
+                          downSum: _data.downSum,
                           site: _data.site,
                           createdAt: _data.createdAt,
                           _id: _data._id,
@@ -167,9 +251,20 @@ var countSum = function(){
                               console.log(err);
                           }
                       })
-                  }else{
-                    //已存入剧目播放，更新剧目评论
+                  }else if(_data.site === '土豆视频'){
+                    //土豆视频已存入剧目赞踩，更新剧目播放，评论
+                    res.playSum = _data.playSum
                     res.commentSum = _data.commentSum
+                    res.save(function(err) {
+                        if (err) {
+                            console.log(err);
+                        }
+                    })
+                  }else{
+                    //非土豆视频已存入剧目播放，更新剧目评论，赞踩
+                    res.commentSum = _data.commentSum
+                    res.upSum = _data.upSum
+                    res.downSum = _data.downSum
                     res.save(function(err) {
                         if (err) {
                             console.log(err);

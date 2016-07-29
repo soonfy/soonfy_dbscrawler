@@ -5,7 +5,7 @@ block content
         .row.col-xs-12
             form.form-horizontal(method="get", action="/movie/search")
                 .form-group
-                    .col-xs-3                          
+                    .col-xs-3
                     .col-xs-5
                         input.form-control.resource(type="text" name="q" value="" placeholder="请输入名称")
                     .col-xs-4
@@ -16,7 +16,7 @@ block content
             table.table.table-hover.table-border.list.track
                 thead
                     tr
-                        th 
+                        th
                         th.col-xs-1 视频网站
                         th.col-xs-1 剧目类型
                         th.col-xs-2 剧目名称
@@ -31,9 +31,9 @@ block content
                     if movies.length > 0
                         tr
                             td
-                                label.checkbox.all 
-                                    input(type="checkbox") 
-                            td 
+                                label.checkbox.all
+                                    input(type="checkbox")
+                            td
                             td
                             td
                             td
@@ -56,19 +56,19 @@ block content
                                 span(title="#{item.title}") #{item.title}
                             td
                                 span(title="#{item.name}") #{item.name}
-                            td #{item.playSumCount}
-                            td #{item.playCount}
-                            td #{item.commentSumCount}
-                            td #{item.commentCount}
+                            td #{item.playSum}
+                            td #{item.play}
+                            td #{item.commentSum}
+                            td #{item.comment}
                             td.time #{moment(item.createAt).format('YYYY-MM-DD HH:mm:ss')}
                             td.op
                                 .btn.btn-danger.btn-sm.del(data-id="#{item._id}") 删除
                     if movies.length > 0
                         tr
                             td
-                                label.checkbox.all 
-                                    input(type="checkbox") 
-                            td 
+                                label.checkbox.all
+                                    input(type="checkbox")
+                            td
                             td
                             td
                             td

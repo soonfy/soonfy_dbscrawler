@@ -31,6 +31,10 @@ var parseVideo = function(data){
     var pid = data.substring(pos + 12, data.indexOf('";', pos + 12)).replace(/ /g, '')
     pos = data.indexOf('vid="')
     var vid = data.substring(pos + 5, data.indexOf('";', pos + 5)).replace(/ /g, '')
+    pos = data.indexOf('tvid')
+    var tvid = data.substring(data.indexOf('"', pos + 5) + 1, data.indexOf('";', pos + 6)).replace(/ /g, '')
+    pos = data.indexOf('cid="')
+    var cid = data.substring(pos + 5, data.indexOf('";', pos + 5)).replace(/ /g, '')
     var title
     var type
     list_meta.each(function(index, _meta){
@@ -44,6 +48,8 @@ var parseVideo = function(data){
 
     video.pid = pid
     video.vid = vid
+    video.tvid = tvid
+    video.cid = cid
     video.title = title
     video.type = type
     // console.log('搜狐')
@@ -58,7 +64,7 @@ var parseVideo = function(data){
  * @param  {[type]} filmId [剧目filmId]
  * @return {[type]}        [剧目播放，评论数量]
  */
-var parseMV = function(pid, vid, url, filmId){
+var parseMV = function(pid, vid, url, filmId, tvid){
 
   var rule = new schedule.RecurrenceRule()
   var times = [5, 15, 25, 35, 45, 55]
@@ -104,6 +110,30 @@ var parseMV = function(pid, vid, url, filmId){
           })
         },
         function(play, playSum, comment, commentSum, cb){
+          // throw new Error(tvid)
+          var timer = schedule.scheduleJob(rule, function () {
+            var requrl = 'http://score.my.tv.sohu.com/digg/get.do?type=1&tvid=' + tvid
+            request(requrl, function(err, res, body){
+                if(!err && res.statusCode === 200){
+                    // console.log(requrl)
+                    // var reg = /\(()\)/
+                    // var vdata = body.replace(reg, '$1')
+                    var vdata = body.substring(body.indexOf('{'), body.lastIndexOf('}') + 1)
+                    // throw new Error(vdata)
+                    if(vdata.indexOf('{') === 0 && vdata.indexOf('upCount') > -1){
+                        var upSum = JSON.parse(vdata).upCount
+                        var downSum = JSON.parse(vdata).downCount
+                        cb(null, play, playSum, comment, commentSum, upSum, downSum)
+                    }
+                }else{
+                        console.log('搜狐采集' + filmId + '评论数量出错。')
+                    }
+            })
+            timer.cancel()
+          })
+        },
+        function(play, playSum, comment, commentSum, upSum, downSum, cb){
+          // throw new Error(upSum)
           var _count
           var a_id = '搜狐视频' + getTodayid() + filmId
           Count.findOne({_id: a_id}, {_id: 1}, function(err, result){
@@ -111,6 +141,8 @@ var parseMV = function(pid, vid, url, filmId){
                   _count = new Count({
                       playSum: playSum,
                       commentSum: commentSum,
+                      upSum: upSum,
+                      downSum: downSum,
                       site: '搜狐视频',
                       createdAt: Date.now(),
                       filmId: filmId,
@@ -177,6 +209,7 @@ var parseTV = function(pid, filmId){
             if(_data != null){
               // console.log(count_sohu)
               var vid = _data.vid
+              var tvid = _data.tvId
               var name = _data.name
               var url = _data.pageUrl
               var requrl = 'http://count.vrs.sohu.com/count/queryext.action?plids=' + pid + '&vids=' + vid
@@ -193,7 +226,7 @@ var parseTV = function(pid, filmId){
                       obj_data.name = name
                       obj_data.play = play
                       obj_data.playSum = playSum
-                      cb(null, obj_data)
+                      cb(null, obj_data, tvid)
                   }else{
                       console.log('搜狐采集' + filmId + '播放数量出错。')
                   }
@@ -205,7 +238,7 @@ var parseTV = function(pid, filmId){
             }
           })
         },
-        function(_data, cb){
+        function(_data, tvid, cb){
 
           var timer = schedule.scheduleJob(rule, function () {
             var url = _data.url
@@ -224,10 +257,32 @@ var parseTV = function(pid, filmId){
                         obj_data.play = play
                         obj_data.playSum = playSum
                         obj_data.comment = comment
-                        cb(null, obj_data)
+                        cb(null, obj_data, tvid)
                     }
                 }else{
                         console.log('搜狐采集' + filmId + '评论数量出错。')
+                    }
+            })
+            timer.cancel()
+          })
+        },
+        function(_data, tvid, cb){
+
+          var timer = schedule.scheduleJob(rule, function () {
+            var requrl = 'http://score.my.tv.sohu.com/digg/get.do?type=2&tvid=' + tvid
+            request(requrl, function(err, res, body){
+                if(!err && res.statusCode === 200){
+                    // console.log(requrl)
+                    var vdata = body.substring(body.indexOf('{'), body.lastIndexOf('}') + 1)
+                    if(vdata.indexOf('{') === 0 && vdata.indexOf('upCount') > -1){
+                        var up = JSON.parse(vdata).upCount
+                        var down = JSON.parse(vdata).downCount
+                        _data.up = up
+                        _data.down = down
+                        cb(null, _data)
+                    }
+                }else{
+                        console.log('搜狐采集' + filmId + '赞踩数量出错。')
                     }
             })
             timer.cancel()
@@ -260,6 +315,8 @@ var parseTV = function(pid, filmId){
 
           var play = _data.play
           var comment = _data.comment
+          var up = _data.up
+          var down = _data.down
           var _id = '搜狐视频' + getTodayid() + filmId + name
           var _movie
           Movie.findOne({_id: _id}, {_id: 1}, function(err, result){
@@ -268,6 +325,8 @@ var parseTV = function(pid, filmId){
                       name: name,
                       play: play,
                       comment: comment,
+                      up: up,
+                      down: down,
                       site: '搜狐视频',
                       createdAt: Date.now(),
                       filmId: filmId,
@@ -296,7 +355,7 @@ var parseTV = function(pid, filmId){
  * @param  {[type]} filmId [剧目filmId]
  * @return {[type]}        [剧目播放，剧集播放，评论数量]
  */
-var parseZY = function(pid, filmId){
+var parseZY = function(pid, filmId, cid){
 
   var rule = new schedule.RecurrenceRule()
   var times = [0, 10, 20, 30, 40, 50]
@@ -369,6 +428,7 @@ var parseZY = function(pid, filmId){
             if(_data != null){
               // console.log(count_sohu)
               var vid = _data.vid
+              var tvid = _data.tvId
               var name = _data.name
               var url = _data.pageUrl
               var requrl = 'http://count.vrs.sohu.com/count/queryext.action?plids=' + pid + '&vids=' + vid
@@ -385,7 +445,7 @@ var parseZY = function(pid, filmId){
                       obj_data.name = name
                       obj_data.play = play
                       obj_data.playSum = playSum
-                      cb(null, obj_data)
+                      cb(null, obj_data, tvid)
                   }else{
                       console.log('搜狐采集' + filmId + '播放数量出错。')
                   }
@@ -397,7 +457,7 @@ var parseZY = function(pid, filmId){
             }
           })
         },
-        function(_data, cb){
+        function(_data, tvid, cb){
 
           var timer = schedule.scheduleJob(rule, function () {
             var url = _data.url
@@ -416,10 +476,34 @@ var parseZY = function(pid, filmId){
                         obj_data.name = name
                         obj_data.play = play
                         obj_data.playSum = playSum
-                        cb(null, obj_data)
+                        cb(null, obj_data, tvid)
                     }
                 }else{
                         console.log('搜狐采集' + filmId + '评论数量出错。')
+                    }
+            })
+            timer.cancel()
+          })
+        },
+        function(_data, tvid, cb){
+
+          var timer = schedule.scheduleJob(rule, function () {
+            var requrl = 'http://score.my.tv.sohu.com/digg/get.do?type=' + cid + '&tvid=' + tvid
+            // console.log(_data.name);
+            // throw new Error(requrl)
+            request(requrl, function(err, res, body){
+                if(!err && res.statusCode === 200){
+                    // console.log(requrl)
+                    var vdata = body.substring(body.indexOf('{'), body.lastIndexOf('}') + 1)
+                    if(vdata.indexOf('{') === 0 && vdata.indexOf('upCount') > -1){
+                        var up = JSON.parse(vdata).upCount
+                        var down = JSON.parse(vdata).downCount
+                        _data.up = up
+                        _data.down = down
+                        cb(null, _data)
+                    }
+                }else{
+                        console.log('搜狐采集' + filmId + '赞踩数量出错。')
                     }
             })
             timer.cancel()
@@ -452,6 +536,8 @@ var parseZY = function(pid, filmId){
 
           var play = _data.play
           var comment = _data.comment
+          var up = _data.up
+          var down = _data.down
           var _id = '搜狐视频' + getTodayid() + filmId + name
           var _movie
           Movie.findOne({_id: _id}, {_id: 1}, function(err, result){
@@ -460,6 +546,8 @@ var parseZY = function(pid, filmId){
                       name: name,
                       play: play,
                       comment: comment,
+                      up: up,
+                      down: down,
                       site: '搜狐视频',
                       createdAt: Date.now(),
                       filmId: filmId,
@@ -493,6 +581,8 @@ exports.parseSohuData = function parse(filmId, url) {
             var title = video.title
             var type = video.type
             var vid = video.vid
+            var cid = video.cid
+            var tvid = video.tvid
 
             if(typeof type !== 'undefined'){
                 // 第一次采集并且剧目链接正确
@@ -505,16 +595,16 @@ exports.parseSohuData = function parse(filmId, url) {
                 })
                 switch(type){
                     case '电影':
-                        parseMV(pid, vid, url, filmId)
+                        parseMV(pid, vid, url, filmId, tvid)
                         break
                     case '电视剧':
                         parseTV(pid, filmId)
                         break
                     case '综艺':
-                        parseZY(pid, filmId)
+                        parseZY(pid, filmId, cid)
                         break
                     default:
-                      parseZY(pid, filmId)
+                      parseZY(pid, filmId, cid)
                         // throw new Error('搜狐剧目[ ' + title + ' ][ ' + url + '    ]类型 [ ' + type + ' ] 有错误。')
                 }
             }else{

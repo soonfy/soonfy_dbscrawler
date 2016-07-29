@@ -79,7 +79,7 @@ var parseSectionData = function(data) {
  * @param  {[type]} filmId [剧目filmId]
  * @return {[type]}        [剧目播放，评论数量]
  */
-var parseMV = function(vid, filmId){
+var parseMV = function(vid, filmId, url){
 
   var rule = new schedule.RecurrenceRule()
   var times = [5, 15, 25, 35, 45, 55]
@@ -119,6 +119,23 @@ var parseMV = function(vid, filmId){
                     }
                 }else{
                         console.log('优酷采集' + filmId + '评论数量出错。')
+                    }
+            })
+            timer.cancel()
+          })
+        },
+        function(play, playSum, comment, commentSum, cb){
+
+          var timer = schedule.scheduleJob(rule, function () {
+            var requrl = url
+            request(requrl, function(err, res, body){
+                if(!err && res.statusCode === 200){
+                    // console.log(requrl)
+                    var $ = cheerio.load(body)
+                    var upSum = parseInt($($('div.fn-up')[0]).text().replace(/,/g, ''))
+                    var downSum = parseInt($($('div.fn-down')[0]).text().replace(/,/g, ''))
+                }else{
+                        console.log('优酷采集' + filmId + '播放数量出错。')
                     }
             })
             timer.cancel()
@@ -241,9 +258,16 @@ var parseTV = function(url, filmId){
                           console.log('videolist 200 null err')
                       }else{
                           var vid = parseVid(body)
+                          var $ = cheerio.load(body)
+                          var up = parseInt($($('div.fn-up')[0]).text().replace(/,/g, ''))
+                          var down = parseInt($($('div.fn-down')[0]).text().replace(/,/g, ''))
                           var obj_data = {}
                           obj_data.vid = vid
                           obj_data.name = name
+                          obj_data.up = up
+                          obj_data.down = down
+                          // console.log(obj_data);
+                          // throw new Error(obj_data)
                           cb(null, obj_data)
                       }
                   }
@@ -260,6 +284,8 @@ var parseTV = function(url, filmId){
           var timer = schedule.scheduleJob(rule, function () {
             var vid = _data.vid
             var name = _data.name
+            var up = _data.up
+            var down = _data.down
             var requrl = 'http://v.youku.com/QVideo/~ajax/getVideoPlayInfo?type=vv&id=' + vid
             request(requrl, function(err, res, body){
                 if(!err && res.statusCode === 200){
@@ -270,6 +296,8 @@ var parseTV = function(url, filmId){
                         obj_data.vid = vid
                         obj_data.name = name
                         obj_data.play = play
+                        obj_data.up = up
+                        obj_data.down = down
                         cb(null, obj_data)
                     }
                 }else{
@@ -285,6 +313,8 @@ var parseTV = function(url, filmId){
             var vid = _data.vid
             var name = _data.name
             var play = _data.play
+            var up = _data.up
+            var down = _data.down
             var requrl = 'http://comments.youku.com/comments/~ajax/getStatus.html?__ap=%7B%22videoid%22%3A%22' + vid + '%22%7D'
             request(requrl, function(err, res, body){
                 if(!err && res.statusCode === 200){
@@ -295,6 +325,8 @@ var parseTV = function(url, filmId){
                         obj_data.name = name
                         obj_data.play = play
                         obj_data.comment = comment
+                        obj_data.up = up
+                        obj_data.down = down
                         cb(null, obj_data)
                     }
                 }else{
@@ -308,6 +340,8 @@ var parseTV = function(url, filmId){
             var name = _data.name
             var play = _data.play
             var comment = _data.comment
+            var up = _data.up
+            var down = _data.down
             _id = '优酷视频' + getTodayid() + filmId + name
             var _movie
             Movie.findOne({_id: _id}, {_id: 1}, function(err, result){
@@ -316,6 +350,8 @@ var parseTV = function(url, filmId){
                         name: name,
                         play: play,
                         comment: comment,
+                        up: up,
+                        down: down,
                         site: '优酷视频',
                         createdAt: Date.now(),
                         filmId: filmId,
@@ -359,7 +395,7 @@ exports.parseYoukuData = function(filmId, url) {
                 })
                 switch(type){
                     case '电影':
-                        parseMV(vid, filmId)
+                        parseMV(vid, filmId, url)
                         break
                     case '电视剧':
                     case '综艺':

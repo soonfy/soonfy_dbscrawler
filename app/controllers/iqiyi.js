@@ -88,6 +88,30 @@ var parseMV = function(pid, filmId){
           })
         },
         function(name, play, playSum, comment, commentSum, cb){
+          var timer = schedule.scheduleJob(rule, function () {
+            var requrl = 'http://up.video.iqiyi.com/ugc-updown/quud.do?type=2&dataid=' + pid
+            request(requrl, function(err, res, body){
+                if(!err && res.statusCode === 200){
+                    // console.log(requrl)
+                    // console.log(body);
+                    // var reg = /try\{null\(()\)\}catch\(e\)\{\}/
+                    // var vdata = body.replace(reg, '$1')
+                    vdata = body.substring(body.indexOf('{"'), body.lastIndexOf(')}'))
+                    // throw new Error(vdata)
+                    if(vdata.indexOf('{') === 0 && vdata.indexOf('up') > -1){
+                        var upSum = JSON.parse(vdata).data.up
+                        var downSum = JSON.parse(vdata).data.down
+
+                        cb(null, name, play, playSum, comment, commentSum, upSum, downSum)
+                    }
+                }else{
+                    console.log('爱奇艺采集' + filmId + '赞踩数量出错。')
+                }
+            })
+            timer.cancel()
+          })
+        },
+        function(name, play, playSum, comment, commentSum, upSum, downSum, cb){
           var _count
 
           var a_id = '爱奇艺视频' + getTodayid() + filmId
@@ -96,6 +120,8 @@ var parseMV = function(pid, filmId){
                   _count = new Count({
                       playSum: playSum,
                       commentSum: commentSum,
+                      upSum: upSum,
+                      downSum: downSum,
                       site: '爱奇艺视频',
                       createdAt: Date.now(),
                       filmId: filmId,
@@ -206,8 +232,7 @@ var parseTV = function(pid, filmId){
                           obj_data.name = JSON.parse(vdata).name
                           obj_data.playSum = JSON.parse(vdata).playCount
                           obj_data.comment = JSON.parse(vdata).commentCount
-                          var count = JSON.parse(vdata).videoCount
-                          cb(null, obj_data, count)
+                          cb(null, obj_data, vid)
                       }
                   }else{
                       console.log('爱奇艺采集' + filmId + '播放评论数量出错。')
@@ -220,7 +245,30 @@ var parseTV = function(pid, filmId){
             }
           })
         },
-        function(_data, count, cb){
+        function(obj_data, vid, cb){
+          var timer = schedule.scheduleJob(rule, function () {
+            var requrl = 'http://up.video.iqiyi.com/ugc-updown/quud.do?type=2&dataid=' + vid
+            request(requrl, function(err, res, body){
+                if(!err && res.statusCode === 200){
+                    // console.log(requrl)
+                    // var reg = /try\{null\(()\)\}catch\(e\)\{\}/
+                    // var vdata = body.replace(reg, '$1')
+                    vdata = body.substring(body.indexOf('{"'), body.lastIndexOf(')}'))
+                    // throw new Error(_vdata)
+                    if(vdata.indexOf('{') === 0 && vdata.indexOf('up') > -1){
+                        obj_data.up = JSON.parse(vdata).data.up
+                        obj_data.down = JSON.parse(vdata).data.down
+
+                        cb(null, obj_data)
+                    }
+                }else{
+                    console.log('爱奇艺采集' + filmId + '赞踩数量出错。')
+                }
+            })
+            timer.cancel()
+          })
+        },
+        function(_data, cb){
           var name = _data.name
           var playSum = _data.playSum
           var _count
@@ -246,6 +294,8 @@ var parseTV = function(pid, filmId){
           })
 
           var comment = _data.comment
+          var up = _data.up
+          var down = _data.down
           _id = '爱奇艺视频' + getTodayid() + filmId + name
           var _movie
           Movie.findOne({_id: _id}, {_id: 1}, function(err, result){
@@ -253,6 +303,8 @@ var parseTV = function(pid, filmId){
                   _movie = new Movie({
                       name: name,
                       comment: comment,
+                      up: up,
+                      down: down,
                       site: '爱奇艺视频',
                       createdAt: Date.now(),
                       filmId: filmId,
@@ -364,7 +416,7 @@ var parseZY = function(pid, cid, filmId){
                           obj_data.name = JSON.parse(vdata).name
                           obj_data.play = JSON.parse(vdata).playCount
                           obj_data.comment = JSON.parse(vdata).commentCount
-                          cb(null, obj_data)
+                          cb(null, obj_data, vid)
                       }
                   }else{
                       console.log('爱奇艺采集' + filmId + '播放评论数量出错。')
@@ -377,10 +429,34 @@ var parseZY = function(pid, cid, filmId){
             }
           })
         },
+        function(obj_data, vid, cb){
+          var timer = schedule.scheduleJob(rule, function () {
+            var requrl = 'http://up.video.iqiyi.com/ugc-updown/quud.do?type=2&dataid=' + vid
+            request(requrl, function(err, res, body){
+                if(!err && res.statusCode === 200){
+                    // console.log(requrl)
+                    // var reg = /try\{null\(()\)\}catch\(e\)\{\}/
+                    // var vdata = body.replace(reg, '$1')
+                    vdata = body.substring(body.indexOf('{"'), body.lastIndexOf(')}'))
+                    if(vdata.indexOf('{') === 0 && vdata.indexOf('up') > -1){
+                        obj_data.up = JSON.parse(vdata).data.up
+                        obj_data.down = JSON.parse(vdata).data.down
+
+                        cb(null, obj_data)
+                    }
+                }else{
+                    console.log('爱奇艺采集' + filmId + '赞踩数量出错。')
+                }
+            })
+            timer.cancel()
+          })
+        },
         function(_data, cb){
           var name = _data.name
           var play = _data.play
           var comment = _data.comment
+          var up = _data.up
+          var down = _data.down
           var _id = '爱奇艺视频' + getTodayid() + filmId + name
           var _movie
           Movie.findOne({_id: _id}, {_id: 1}, function(err, result){
@@ -389,6 +465,8 @@ var parseZY = function(pid, cid, filmId){
                       name: name,
                       play: play,
                       comment: comment,
+                      up: up,
+                      down: down,
                       site: '爱奇艺视频',
                       createdAt: Date.now(),
                       filmId: filmId,

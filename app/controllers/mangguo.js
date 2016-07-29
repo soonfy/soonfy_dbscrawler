@@ -106,7 +106,9 @@ var parseMV = function(pid, filmId){
                     if(body.indexOf('{') === 0 && body.indexOf('all') > -1){
                         var play = JSON.parse(body).data.all
                         var playSum = JSON.parse(body).data.all
-                        cb(null, play, playSum)
+                        var upSum = JSON.parse(body).data.like
+                        var downSum = JSON.parse(body).data.unlike
+                        cb(null, play, playSum, upSum, downSum)
                     }
                 }else{
                         console.log('芒果采集' + filmId + '播放数量出错。')
@@ -115,7 +117,7 @@ var parseMV = function(pid, filmId){
             timer.cancel()
           })
         },
-        function(play, playSum, cb){
+        function(play, playSum, upSum, downSum, cb){
 
           var timer = schedule.scheduleJob(rule, function () {
             var requrl = 'http://comment.hunantv.com/video_comment/list/?subject_id=' + pid
@@ -127,7 +129,7 @@ var parseMV = function(pid, filmId){
                     if(vdata.indexOf('{') === 0 && vdata.indexOf('total_number') > -1){
                         var comment = JSON.parse(vdata).total_number
                         var commentSum = JSON.parse(vdata).total_number
-                        cb(null, play, playSum, comment, commentSum)
+                        cb(null, play, playSum, comment, commentSum, upSum, downSum)
                     }
                 }else{
                         console.log('芒果采集' + filmId + '评论数量出错。')
@@ -136,7 +138,7 @@ var parseMV = function(pid, filmId){
             timer.cancel()
           })
         },
-        function(play, playSum, comment, commentSum, cb){
+        function(play, playSum, comment, commentSum, upSum, downSum, cb){
           var _count
           var _id = '芒果视频' + getTodayid() + filmId
           Count.findOne({_id: _id}, {_id: 1}, function(err, result){
@@ -144,6 +146,8 @@ var parseMV = function(pid, filmId){
                   _count = new Count({
                       playSum: playSum,
                       commentSum: commentSum,
+                      upSum: upSum,
+                      downSum: downSum,
                       site: '芒果视频',
                       createdAt: Date.now(),
                       filmId: filmId,
@@ -221,7 +225,7 @@ var parseTV = function(vid, filmId){
                      })
                     cb(null, list_data)
                   }else{
-                      console.log('芒果采集' + filmId + '播放数量出错。')
+                      console.log('芒果采集' + filmId + '剧集列表出错。')
                   }
               })
               count_mangguo++
@@ -252,6 +256,8 @@ var parseTV = function(vid, filmId){
                           obj_data.vid = vid
                           obj_data.name = name
                           obj_data.play = play
+                          obj_data.up = JSON.parse(body).data.like
+                          obj_data.down = JSON.parse(body).data.unlike
                           cb(null, obj_data)
                       }
                   }else{
@@ -283,6 +289,8 @@ var parseTV = function(vid, filmId){
                         obj_data.name = name
                         obj_data.play = play
                         obj_data.comment = comment
+                        obj_data.up = _data.up
+                        obj_data.down = _data.down
                         cb(null, obj_data)
                     }
                 }else{
@@ -304,6 +312,8 @@ var parseTV = function(vid, filmId){
                       name: name,
                       play: play,
                       comment: comment,
+                      up: _data.up,
+                      down: _down.down,
                       site: '芒果视频',
                       createdAt: Date.now(),
                       filmId: filmId,
@@ -408,6 +418,8 @@ var parseZY = function(pid, site, path, filmId){
                           obj_data.vid =vid
                           obj_data.name = name
                           obj_data.play = play
+                          obj_data.name = JSON.parse(body).data.like
+                          obj_data.play = JSON.parse(body).data.unlike
                           cb(null, obj_data)
                       }
                   }else{
@@ -439,6 +451,8 @@ var parseZY = function(pid, site, path, filmId){
                         obj_data.name = name
                         obj_data.play = play
                         obj_data.comment = comment
+                        obj_data.up = _data.up
+                        obj_data.down = _data.down
                         cb(null, obj_data)
                     }
                 }else{
@@ -460,6 +474,8 @@ var parseZY = function(pid, site, path, filmId){
                       name: name,
                       play: play,
                       comment: comment,
+                      up: _data.up,
+                      down: _data.down,
                       site: '芒果视频',
                       createdAt: Date.now(),
                       filmId: filmId,

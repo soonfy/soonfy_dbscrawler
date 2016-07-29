@@ -25,6 +25,8 @@ var MovieSchema = new Schema({
   },
   play: Number,                                                 //剧集播放量
   comment: Number,                                              //剧集评论量
+  up: Number,                                                      //剧集赞数
+  down: Number,                                                    //剧集踩数
   createdAt:  {                                                    //采集时间
       type: Date,
       index: true

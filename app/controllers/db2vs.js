@@ -28,7 +28,7 @@ var Video = require('../models/db2vs')
 var store = function (res, q) {
   // console.log(res);
   var fields = ['filmId', 'movie_name', 'videoname', 'videosite', 'videotype', 'videourl']
-  var fieldNames = ['世伟表_id', '需求名称', '网站名称', '视频网站', '网站类型', '网站链接']
+  var fieldNames = ['豆瓣表_id', '需求名称', '网站名称', '视频网站', '网站类型', '网站链接']
   json2csv({data: res, fields: fields, fieldNames: fieldNames}, function (err, csv) {
       var filename = 'db2vs_true.csv';
       fs.appendFile(path.join(__dirname, 'video', filename), iconv.convert(csv + ','), 'utf8', function(err){
@@ -51,7 +51,7 @@ var store = function (res, q) {
 var store_false = function (res, q) {
   console.log(res);
   var fields = ['filmId', 'movie_name', 'videosite']
-  var fieldNames = ['世伟表_id', '需求名称', '视频网站']
+  var fieldNames = ['豆瓣表_id', '需求名称', '视频网站']
   json2csv({data: res, fields: fields, fieldNames: fieldNames}, function (err, csv) {
       var filename = 'db2vs_false.csv';
       fs.appendFile(path.join(__dirname, 'video', filename), (csv + ','), 'utf8', function(err){
@@ -91,7 +91,7 @@ var insert_true = function (_data) {
           }
       })
     }else {
-      console.log(_data.videosite + '  ' + _data.name + '  exits.')
+      console.log(_data.videosite + '  ' + _data.movie_name + '  exits.')
     }
   })
 }
@@ -1072,7 +1072,7 @@ var dbfind = function () {
 
 //测试对应数据
 //
-//dbfind()
+// dbfind()
 
 /**
  * 执行对应程序

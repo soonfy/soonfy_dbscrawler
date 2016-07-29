@@ -76,7 +76,8 @@ var parseMV = function(pid, filmId){
                         var playSum = vdata.playNum
                         var comment = vdata.commentNum
                         var commentSum = vdata.commentNum
-                        cb(null, play, playSum, comment, commentSum)
+                        var upSum = vdata.digNum
+                        cb(null, play, playSum, comment, commentSum, upSum)
                     }
                 } else {
                     console.log(error);
@@ -85,7 +86,7 @@ var parseMV = function(pid, filmId){
             timer.cancel()
           })
         },
-        function(play, playSum, comment, commentSum, cb){
+        function(play, playSum, comment, commentSum, upSum, cb){
           var _count
           var _id = '土豆视频' + getTodayid() + filmId
           Count.findOne({_id: _id}, {_id: 1}, function(err, result){
@@ -93,6 +94,7 @@ var parseMV = function(pid, filmId){
                   _count = new Count({
                       playSum: playSum,
                       commentSum: commentSum,
+                      upSum: upSum,
                       site: '土豆视频',
                       createdAt: Date.now(),
                       filmId: filmId,
@@ -173,10 +175,12 @@ var parseTV = function(url, filmId){
                           var vdata =  JSON.parse(body)
                           var play = vdata.playNum
                           var comment = vdata.commentNum
+                          var upSum = vdata.digNum
                           var obj_data = {}
                           obj_data.name = name
                           obj_data.play = play
                           obj_data.comment = comment
+                          obj_data.upSum = upSum
                           cb(null, obj_data)
                       }
                   } else {
@@ -215,6 +219,29 @@ var parseTV = function(url, filmId){
                   cb(null)
               }else {
                   console.log('土豆' + name + 'exits.')
+              }
+          })
+
+          var upSum = _data.upSum
+          up_id = '土豆视频' + getTodayid() + filmId
+          var _count
+          Count.findOne({_id: up_id}, {_id: 1}, function(err, result){
+              if(result === null){
+                  _count = new Count({
+                      upSum: upSum,
+                      site: '土豆视频',
+                      createdAt: Date.now(),
+                      filmId: filmId,
+                      _id: up_id
+                  })
+                  _count.save(function(err) {
+                      if (err) {
+                          console.log(err);
+                      }
+                  })
+                  cb(null)
+              }else {
+                  console.log('土豆' + filmId + 'exits.')
               }
           })
         }

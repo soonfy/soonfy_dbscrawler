@@ -28,6 +28,8 @@ var parseVideo = function(data){
     var list_meta = $('meta')
     var pos = data.indexOf('pid:')
     video.pid = data.substring(pos + 5, data.indexOf(',', pos)).replace(/ /g, '')
+    pos = data.indexOf('vid:')
+    video.vid = data.substring(pos + 5, data.indexOf(',', pos)).replace(/ /g, '')
     pos = data.indexOf('cid:')
     video.cid = data.substring(pos + 5, data.indexOf(',', pos)).replace(/ /g, '')
     pos = data.indexOf('nowEpisodes:')
@@ -52,7 +54,7 @@ var parseVideo = function(data){
  * @param  {[type]} filmId [剧目filmId]
  * @return {[type]}        [剧目播放，评论数量]
  */
-var parseMV = function(pid, filmId){
+var parseMV = function(pid, filmId, vid){
 
   var rule = new schedule.RecurrenceRule()
   var times = [5, 15, 25, 35, 45, 55]
@@ -81,6 +83,24 @@ var parseMV = function(pid, filmId){
           })
         },
         function(play, playSum, comment, commentSum, cb){
+          var timer = schedule.scheduleJob(rule, function () {
+            var requrl = 'http://v.stat.letv.com/vplay/getIdsInfo?ids=' + vid
+            request(requrl, function(err, res, body){
+                if(!err && res.statusCode === 200){
+                    // console.log(requrl)
+                    if(body.indexOf('[') === 0 && body.indexOf('up') > -1){
+                        var upSum = JSON.parse(body)[0].up
+                        var downSum = JSON.parse(body)[0].down
+                        cb(null, play, playSum, comment, commentSum, upSum, downSum)
+                    }
+                }else{
+                        console.log('乐视采集' + filmId + '赞踩数量出错。')
+                    }
+            })
+            timer.cancel()
+          })
+        },
+        function(play, playSum, comment, commentSum, upSum, downSum, cb){
           var _count
           var a_id = '乐视视频' + getTodayid() + filmId
           Count.findOne({_id: a_id}, {_id: 1}, function(err, result){
@@ -88,6 +108,8 @@ var parseMV = function(pid, filmId){
                   _count = new Count({
                       playSum: playSum,
                       commentSum: commentSum,
+                      upSum: upSum,
+                      downSum: downSum,
                       site: '乐视视频',
                       createdAt: Date.now(),
                       filmId: filmId,
@@ -184,6 +206,8 @@ var parseTV = function(pid, cid, length, filmId){
                           obj_data.playSum = JSON.parse(body).plist_play_count
                           obj_data.comment = JSON.parse(body).vcomm_count
                           obj_data.commentSum = JSON.parse(body).pcomm_count
+                          obj_data.up = JSON.parse(body).up
+                          obj_data.down = JSON.parse(body).down
                           cb(null, obj_data)
                       }
                   }else{
@@ -226,6 +250,8 @@ var parseTV = function(pid, cid, length, filmId){
 
           var play = _data.play
           var comment = _data.comment
+          var up = _data.up
+          var down = _data.down
           var _id = '乐视视频' + getTodayid() + filmId + name
           var _movie
           Movie.findOne({_id: _id}, {_id: 1}, function(err, result){
@@ -234,6 +260,8 @@ var parseTV = function(pid, cid, length, filmId){
                       name: name,
                       play: play,
                       comment: comment,
+                      up: up,
+                      down: down,
                       site: '乐视视频',
                       createdAt: Date.now(),
                       filmId: filmId,
@@ -350,6 +378,8 @@ var parseZY = function(pid, cid, filmId){
                           obj_data.playSum = JSON.parse(body).plist_play_count
                           obj_data.comment = JSON.parse(body).vcomm_count
                           obj_data.commentSum = JSON.parse(body).pcomm_count
+                          obj_data.up = JSON.parse(body).up
+                          obj_data.down = JSON.parse(body).down
                           cb(null, obj_data)
                       }
                   }else{
@@ -392,6 +422,8 @@ var parseZY = function(pid, cid, filmId){
 
           var play = _data.play
           var comment = _data.comment
+          var up = _data.up
+          var down = _data.down
           var _id = '乐视视频' + getTodayid() + filmId + name
           var _movie
           Movie.findOne({_id: _id}, {_id: 1}, function(err, result){
@@ -400,6 +432,8 @@ var parseZY = function(pid, cid, filmId){
                       name: name,
                       play: play,
                       comment: comment,
+                      up: up,
+                      down: down,
                       site: '乐视视频',
                       createdAt: Date.now(),
                       filmId: filmId,
@@ -427,6 +461,7 @@ exports.parseLetvData = function(filmId, url) {
             // console.log(url)
             var video = parseVideo(body)
             var pid = video.pid
+            var vid = video.vid
             var title = video.title
             var type = video.type
             var cid = video.cid
@@ -442,7 +477,7 @@ exports.parseLetvData = function(filmId, url) {
               })
               switch(type){
                   case '电影':
-                      parseMV(pid, filmId)
+                      parseMV(pid, filmId, vid)
                       break
                   case '电视剧':
                       parseTV(pid, cid, length, filmId)

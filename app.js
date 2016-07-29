@@ -4,9 +4,9 @@ var logger = require('morgan');
 var mongoose = require('mongoose')
 var cookieParser = require('cookie-parser')
 var session = require('express-session')
-var dbUrl = 'mongodb://localhost/tarantula'
+var dbUrl = 'mongodb://localhost/tarantula_soonfy'
 var mongoStore = require('connect-mongo')(session)
-var port = 4000
+var port = 3038
 var app = express()
 var bodyParser = require('body-parser');
 
