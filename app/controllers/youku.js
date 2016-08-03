@@ -150,8 +150,8 @@ var parseMV = function(vid, filmId, url){
                   _count = new Count({
                       playSum: playSum,
                       commentSum: commentSum,
-                      upSum: upSum,
-                      downSum: downSum,
+                      upSum: playSum,
+                      commentSum: commentSum,
                       site: '优酷视频',
                       createdAt: Date.now(),
                       filmId: filmId,
