@@ -1046,24 +1046,28 @@ var dbfind = function () {
         })
       },
       function (dbs, cb) {
-        //定时器
-        var rule = new schedule.RecurrenceRule()
-        var times = [0, 10, 20, 30, 40, 50]
-        rule.second = times
-        var count = 0
-        var len = dbs.length
-        // console.log(len)
-        var timer = schedule.scheduleJob(rule, function () {
-          if(dbs[count]){
-            console.log(count)
-            search(dbs[count])
-            count++
-            if(count === len){
-              timer.cancel()
+        if(dbs.length > 0){
+          //定时器
+          var rule = new schedule.RecurrenceRule()
+          var times = [0, 10, 20, 30, 40, 50]
+          rule.second = times
+          var count = 0
+          var len = dbs.length
+          // console.log(len)
+          var timer = schedule.scheduleJob(rule, function () {
+            if(dbs[count]){
+              console.log(count)
+              search(dbs[count])
+              count++
+              if(count === len){
+                timer.cancel()
+              }
             }
-          }
-        })
-        cb(null)
+          })
+          cb(null)
+        }else{
+          console.log('films db is empty.')
+        }
       }
     ],function (err, res) {
 

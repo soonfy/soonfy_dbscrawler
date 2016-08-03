@@ -6,8 +6,6 @@ var cookieParser = require('cookie-parser')
 var session = require('express-session')
 var dbUrl = 'mongodb://localhost/tarantula_soonfy'
 
-//var dbUrl = 'mongodb://normal:Joke123@ant09.idatage.com:27021/tarantula'
-
 var mongoStore = require('connect-mongo')(session)
 var port = 3038
 var app = express()

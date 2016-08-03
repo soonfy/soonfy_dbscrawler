@@ -56,7 +56,7 @@ var parseVideo = function(data){
  * @param  {[type]} filmId [剧目filmId]
  * @return {[type]}        [剧目播放，评论数量]
  */
-var parseMV = function(pid, filmId){
+var parseMV = function(pid, vid, filmId){
 
   var rule = new schedule.RecurrenceRule()
   var times = [5, 15, 25, 35, 46, 56]
@@ -65,6 +65,26 @@ var parseMV = function(pid, filmId){
     async.waterfall([
         function(cb){
 
+        var timer = schedule.scheduleJob(rule, function () {
+            var requrl = 'http://dataapi.youku.com/getData?num=200001&icode=' + vid
+            request(requrl, function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    console.log(requrl)
+                    if(body.indexOf('{') === 0 && body.indexOf('vv') > -1){
+                        var vdata =  JSON.parse(body)
+                        var play = vdata.result.vv
+                        var playSum = vdata.result.vv
+                        cb(null, play, playSum)
+                    }
+                } else {
+                    console.log(error);
+                }
+            })
+            timer.cancel()
+        })
+        },
+        function(play, playSum, cb){
+
           var timer = schedule.scheduleJob(rule, function () {
             var requrl = 'http://www.tudou.com/crp/itemSum.action?uabcdefg=0&iabcdefg=' + pid
             request(requrl, function(error, response, body) {
@@ -72,8 +92,6 @@ var parseMV = function(pid, filmId){
                     // console.log(requrl)
                     if(body.indexOf('{') === 0 && body.indexOf('playNum') > -1){
                         var vdata =  JSON.parse(body)
-                        var play = vdata.playNum
-                        var playSum = vdata.playNum
                         var comment = vdata.commentNum
                         var commentSum = vdata.commentNum
                         var upSum = vdata.digNum
@@ -270,7 +288,7 @@ exports.parseTudouData = function(filmId, url) {
 
             switch(type){
                 case '电影':
-                    parseMV(pid, filmId)
+                    parseMV(pid, vid, filmId)
                     break
                 case '电视剧':
                 case '综艺':
