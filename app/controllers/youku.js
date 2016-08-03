@@ -142,7 +142,7 @@ var parseMV = function(vid, filmId, url){
             timer.cancel()
           })
         },
-        function(play, playSum, comment, commentSum, upSum, downSum cb){
+        function(play, playSum, comment, commentSum, upSum, downSum, cb){
           var _count
           var _id = '优酷视频' + getTodayid() + filmId
           Count.findOne({_id: _id}, {_id: 1}, function(err, result){

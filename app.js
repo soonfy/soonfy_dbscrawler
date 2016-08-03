@@ -5,6 +5,9 @@ var mongoose = require('mongoose')
 var cookieParser = require('cookie-parser')
 var session = require('express-session')
 var dbUrl = 'mongodb://localhost/tarantula_soonfy'
+
+//var dbUrl = 'mongodb://normal:Joke123@ant09.idatage.com:27021/tarantula'
+
 var mongoStore = require('connect-mongo')(session)
 var port = 3038
 var app = express()
@@ -36,7 +39,7 @@ if ('development' === app.get('env')) {
     app.set('showStackError', true)
     app.use(logger('dev'));
     app.locals.pretty = true
-    mongoose.set('debug', true)
+    //mongoose.set('debug', true)
 }
 
 require('./config/routes')(app)
