@@ -1083,6 +1083,7 @@ var search = function(db){
  * @return {[type]} [description]
  */
 var dbfind = function () {
+  console.log('开始检索链接...')
 
     var filename = 'db2vs_true.csv';
     fs.writeFile(path.join(__dirname, 'video', filename), '', 'utf8', function(err){

@@ -33,6 +33,8 @@ var CNTV = require('./cntv')
  */
 var parseData = function(){
 
+  console.log('开始采集视频数据...')
+
   //url审核文件
   var str ='filmId' + ',' + 'name' + ',' + 'type' + ',' + 'url' + '\r\n'
   fs.writeFile(path.join(__dirname, 'video', 'videodata_true.csv'), str, 'utf-8', function (err){
