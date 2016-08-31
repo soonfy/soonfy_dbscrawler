@@ -5,7 +5,6 @@ var Count = require('../app/controllers/count')                       //汇总�
 var Expshows = require('../app/controllers/explist')                 //导出剧目
 var Expshow = require('../app/controllers/expshow')                 //导出剧集
 var File = require('../app/controllers/file')
-var plugins = require('../app/controllers/plugins')
 
 module.exports = function(app) {
 
