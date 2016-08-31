@@ -111,7 +111,7 @@ var parseMV = function(pid, filmId){
                         cb(null, play, playSum, upSum, downSum)
                     }
                 }else{
-                        console.log('芒果采集' + filmId + '播放数量出错。')
+                        // console.log('芒果采集' + filmId + '播放数量出错。')
                     }
             })
             timer.cancel()
@@ -132,7 +132,7 @@ var parseMV = function(pid, filmId){
                         cb(null, play, playSum, comment, commentSum, upSum, downSum)
                     }
                 }else{
-                        console.log('芒果采集' + filmId + '评论数量出错。')
+                        // console.log('芒果采集' + filmId + '评论数量出错。')
                     }
             })
             timer.cancel()
@@ -160,7 +160,7 @@ var parseMV = function(pid, filmId){
                   })
                   cb(null)
               }else {
-                  console.log('芒果' + filmId + 'exits.')
+                  // console.log('芒果' + filmId + 'exits.')
               }
           })
         }
@@ -197,7 +197,7 @@ var parseTV = function(vid, filmId){
                     }
                     cb(null, list_page)
                 }else{
-                        console.log('芒果采集' + filmId + '剧集列表出错。')
+                        // console.log('芒果采集' + filmId + '剧集列表出错。')
                     }
             })
             timer.cancel()
@@ -225,7 +225,7 @@ var parseTV = function(vid, filmId){
                      })
                     cb(null, list_data)
                   }else{
-                      console.log('芒果采集' + filmId + '剧集列表出错。')
+                      // console.log('芒果采集' + filmId + '剧集列表出错。')
                   }
               })
               count_mangguo++
@@ -261,7 +261,7 @@ var parseTV = function(vid, filmId){
                           cb(null, obj_data)
                       }
                   }else{
-                      console.log('芒果采集' + filmId + '播放数量出错。')
+                      // console.log('芒果采集' + filmId + '播放数量出错。')
                   }
               })
               count_mangguo++
@@ -294,7 +294,7 @@ var parseTV = function(vid, filmId){
                         cb(null, obj_data)
                     }
                 }else{
-                        console.log('芒果采集' + filmId + '播放评论数量出错。')
+                        // console.log('芒果采集' + filmId + '播放评论数量出错。')
                     }
             })
             timer.cancel()
@@ -326,7 +326,7 @@ var parseTV = function(vid, filmId){
                   })
                   cb(null)
               }else {
-                  console.log('芒果' + name + 'exits.')
+                  // console.log('芒果' + name + 'exits.')
               }
           })
         }
@@ -363,7 +363,7 @@ var parseZY = function(pid, site, path, filmId){
                     var list_year = JSON.parse(vdata)
                     cb(null, list_year)
                 }else{
-                        console.log('芒果采集' + filmId + '年代列表出错。')
+                        // console.log('芒果采集' + filmId + '年代列表出错。')
                     }
             })
             timer.cancel()
@@ -387,7 +387,7 @@ var parseZY = function(pid, site, path, filmId){
                       var list_data = JSON.parse(vdata)
                       cb(null, list_data)
                   }else{
-                      console.log('芒果采集' + filmId + '剧集列表出错。')
+                      // console.log('芒果采集' + filmId + '剧集列表出错。')
                   }
               })
               count_mangguo++
@@ -423,7 +423,7 @@ var parseZY = function(pid, site, path, filmId){
                           cb(null, obj_data)
                       }
                   }else{
-                      console.log('芒果采集' + filmId + '播放数量出错。')
+                      // console.log('芒果采集' + filmId + '播放数量出错。')
                   }
               })
               count_mangguo++
@@ -456,7 +456,7 @@ var parseZY = function(pid, site, path, filmId){
                         cb(null, obj_data)
                     }
                 }else{
-                        console.log('芒果采集' + filmId + '播放评论数量出错。')
+                        // console.log('芒果采集' + filmId + '播放评论数量出错。')
                     }
             })
             timer.cancel()
@@ -488,7 +488,7 @@ var parseZY = function(pid, site, path, filmId){
                   })
                   cb(null)
               }else {
-                  console.log('芒果' + name + 'exits.')
+                  // console.log('芒果' + name + 'exits.')
               }
           })
         }
@@ -514,7 +514,7 @@ exports.parseMangguoData = function(filmId, url) {
                 fs.appendFile(path.join(__dirname, 'video', 'videodata_true.csv'), str, function (err) {
                     //
                     if(!err){
-                        console.log(title + ' is appended.') ;
+                        // console.log(title + ' is appended.') ;
                     }
                 })
                 switch(type){
@@ -536,7 +536,7 @@ exports.parseMangguoData = function(filmId, url) {
                 fs.appendFile(path.join(__dirname, 'video', 'videodata_false.csv'), str, function (err) {
                     //
                     if(!err){
-                        console.log('the false message is appended.') ;
+                        // console.log('the false message is appended.') ;
                     }
                 })
             }

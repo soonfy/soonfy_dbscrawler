@@ -93,7 +93,7 @@ var parseMV = function(pid, filmId){
                         cb(null, list_data)
                     }
                 }else{
-                    console.log('腾讯采集' + filmId + '剧集列表出错。')
+                    // console.log('腾讯采集' + filmId + '剧集列表出错。')
                 }
             })
             timer.cancel()
@@ -121,7 +121,7 @@ var parseMV = function(pid, filmId){
                           cb(null, name, play, playSum)
                       }
                   }else{
-                      console.log('腾讯采集' + filmId + '播放数量出错。')
+                      // console.log('腾讯采集' + filmId + '播放数量出错。')
                   }
               })
               count_qq++
@@ -145,7 +145,7 @@ var parseMV = function(pid, filmId){
                         cb(null, cid, name, play, playSum)
                     }
                 }else{
-                    console.log('腾讯采集' + filmId + '评论cid出错。')
+                    // console.log('腾讯采集' + filmId + '评论cid出错。')
                 }
             })
             timer.cancel()
@@ -164,7 +164,7 @@ var parseMV = function(pid, filmId){
                         cb(null, name, play, playSum, comment, commentSum)
                     }
                 }else{
-                    console.log('腾讯采集' + filmId + '评论数量出错。')
+                    // console.log('腾讯采集' + filmId + '评论数量出错。')
                 }
             })
             timer.cancel()
@@ -190,7 +190,7 @@ var parseMV = function(pid, filmId){
                   })
                   cb(null)
               }else {
-                  console.log('腾讯' + filmId + 'exits.')
+                  // console.log('腾讯' + filmId + 'exits.')
               }
           })
         }
@@ -227,7 +227,7 @@ var parseTV = function(pid, filmId){
                         cb(null, list_data)
                     }
                 }else{
-                    console.log('腾讯采集' + filmId + '剧集列表出错。')
+                    // console.log('腾讯采集' + filmId + '剧集列表出错。')
                 }
             })
             timer.cancel()
@@ -257,7 +257,7 @@ var parseTV = function(pid, filmId){
                           cb(null, obj_data)
                       }
                   }else{
-                      console.log('腾讯采集' + filmId + '播放数量出错。')
+                      // console.log('腾讯采集' + filmId + '播放数量出错。')
                   }
               })
               count_qq++
@@ -288,7 +288,7 @@ var parseTV = function(pid, filmId){
                         cb(null, obj_data)
                     }
                 }else{
-                    console.log('腾讯采集' + filmId + '评论cid出错。')
+                    // console.log('腾讯采集' + filmId + '评论cid出错。')
                 }
             })
             timer.cancel()
@@ -313,7 +313,7 @@ var parseTV = function(pid, filmId){
                         cb(null, obj_data)
                     }
                 }else{
-                    console.log('腾讯采集' + filmId + '评论数量出错。')
+                    // console.log('腾讯采集' + filmId + '评论数量出错。')
                 }
             })
             timer.cancel()
@@ -340,7 +340,7 @@ var parseTV = function(pid, filmId){
                   })
                   cb(null)
               }else {
-                  console.log('腾讯视频' + filmId + 'exits.')
+                  // console.log('腾讯视频' + filmId + 'exits.')
               }
           })
 
@@ -364,7 +364,7 @@ var parseTV = function(pid, filmId){
                   })
                   cb(null)
               }else {
-                  console.log('腾讯视频' + name + 'exits.')
+                  // console.log('腾讯视频' + name + 'exits.')
               }
           })
         }
@@ -401,7 +401,7 @@ var parseZY = function(pid, filmId){
                         cb(null, list_year)
                     }
                 }else{
-                    console.log('腾讯采集' + filmId + '年代列表出错。')
+                    // console.log('腾讯采集' + filmId + '年代列表出错。')
                 }
             })
             timer.cancel()
@@ -427,7 +427,7 @@ var parseZY = function(pid, filmId){
                           cb(null, list_data)
                       }
                   }else{
-                      console.log('腾讯采集' + filmId + '剧集列表出错。')
+                      // console.log('腾讯采集' + filmId + '剧集列表出错。')
                   }
               })
               count_qq++
@@ -463,7 +463,7 @@ var parseZY = function(pid, filmId){
                           cb(null, obj_data)
                       }
                   }else{
-                      console.log('腾讯采集' + filmId + '播放数量出错。')
+                      // console.log('腾讯采集' + filmId + '播放数量出错。')
                   }
               })
               count_qq++
@@ -495,7 +495,7 @@ var parseZY = function(pid, filmId){
                           cb(null, obj_data)
                       }
                   }else{
-                      console.log('腾讯采集' + filmId + '评论cid出错。')
+                      // console.log('腾讯采集' + filmId + '评论cid出错。')
                   }
               })
             timer_qq.cancel()
@@ -522,7 +522,7 @@ var parseZY = function(pid, filmId){
                           cb(null, obj_data)
                       }
                   }else{
-                      console.log('腾讯采集' + filmId + '评论数量出错。')
+                      // console.log('腾讯采集' + filmId + '评论数量出错。')
                   }
               })
             timer_qq.cancel()
@@ -549,7 +549,7 @@ var parseZY = function(pid, filmId){
                   })
                   cb(null)
               }else {
-                  console.log('腾讯' + filmId + 'exits.')
+                  // console.log('腾讯' + filmId + 'exits.')
               }
           })
 
@@ -575,7 +575,7 @@ var parseZY = function(pid, filmId){
                   })
                   cb(null)
               }else {
-                  console.log('腾讯视频' + name + 'exits.')
+                  // console.log('腾讯视频' + name + 'exits.')
               }
           })
         }
@@ -601,7 +601,7 @@ exports.parseQQData = function(filmId, url) {
               fs.appendFile(path.join(__dirname, 'video', 'videodata_true.csv'), str, function (err) {
                   //
                   if(!err){
-                      console.log(title + ' is appended.') ;
+                      // console.log(title + ' is appended.') ;
                   }
               })
               switch(type){
@@ -630,7 +630,7 @@ exports.parseQQData = function(filmId, url) {
             var str = filmId + ',' + 'title' + ',' + 'type' + ',' + url + ','
             fs.appendFile(path.join(__dirname, 'video', 'videodata_false.csv'), str, function (err) {
               if(!err){
-                  console.log('the false message is appended.') ;
+                  // console.log('the false message is appended.') ;
               }
             })
           }

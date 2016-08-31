@@ -61,7 +61,7 @@ var exportShow = function(fileday){
           if(err){
             console.log(err)
           }else{
-            console.log(fileday +'剧集汇总数据导出成功。')
+            // console.log(fileday +'剧集汇总数据导出成功。')
           }
 
         })

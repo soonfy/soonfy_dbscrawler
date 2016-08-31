@@ -49,7 +49,7 @@ var store = function (res, q) {
  * @return {[type]}     [description]
  */
 var store_false = function (res, q) {
-  console.log(res);
+  // console.log(res);
   var fields = ['filmId', 'movie_name', 'videosite']
   var fieldNames = ['豆瓣表_id', '需求名称', '视频网站']
   json2csv({data: res, fields: fields, fieldNames: fieldNames}, function (err, csv) {
@@ -71,7 +71,7 @@ var store_false = function (res, q) {
  * @return {[type]}       [description]
  */
 var insert_true = function (_data) {
-  console.log(_data);
+  // console.log(_data);
   var site = _data.videosite
   var filmId = _data.filmId
   var _id = site + filmId
@@ -91,7 +91,7 @@ var insert_true = function (_data) {
           }
       })
     }else {
-      console.log(_data.videosite + '  ' + _data.movie_name + '  exits.')
+      // console.log(_data.videosite + '  ' + _data.movie_name + '  exits.')
     }
   })
 }
@@ -596,6 +596,29 @@ var queryMangguo = function(data, db){
   return list_video
 }
 
+var queryCNTV = function (data, db) {
+  var list_video = []
+  var $ = cheerio.load(data)
+  var list_item = $('.main_l')
+  list_item.each(function (data) {
+    var tempObject = {}
+    tempObject['videosite'] = '央视网'
+    tempObject['movie_name'] = db.name
+    tempObject['filmId'] = db._id
+    var info = $(this).find('dl').find('h4').text()
+    tempObject['info'] = info
+    var type = info.substring(info.indexOf('[') + 1, info.indexOf(']'))
+    tempObject['videotype'] = type
+    var name = info.substring(info.indexOf(']') + 1, info.indexOf('开始播放'))
+    tempObject['videoname'] = name
+    var url = $(this).find('p.tv_rec').find('a').attr('href')
+    tempObject['videourl'] = url
+    list_video.push(tempObject)
+  })
+  // console.log(list_video)
+  return list_video
+}
+
 /**
  * 搜索验证全过程
  */
@@ -615,7 +638,7 @@ var search_iqiyi = function (db) {
           var _data = ret[0]
           cb(null, _data)
         }else{
-          console.log('爱奇艺搜索  ' + q + ' 出错。')
+          // console.log('爱奇艺搜索  ' + q + ' 出错。')
           var w_data = {
             uid: db._id,
             movie_name: db.name,
@@ -676,7 +699,7 @@ var search_qq = function (db) {
               var _data = ret[0]
               cb(null, _data)
           } catch (e) {
-              console.log('腾讯解析json  ' + q + '  出错。')
+              // console.log('腾讯解析json  ' + q + '  出错。')
               var w_data = {
                 filmId: db._id,
                 movie_name: db.name,
@@ -685,7 +708,7 @@ var search_qq = function (db) {
               store_false(w_data, q)
           }
         }else{
-          console.log('腾讯搜索  ' + q + '  出错。')
+          // console.log('腾讯搜索  ' + q + '  出错。')
           var w_data = {
             filmId: db._id,
             movie_name: db.name,
@@ -739,7 +762,7 @@ var search_letv = function (db) {
           var _data = ret[0]
           cb(null, _data)
         }else{
-          console.log('乐视搜索  ' + q + ' 出错。')
+          // console.log('乐视搜索  ' + q + ' 出错。')
           var w_data = {
             filmId: db._id,
             movie_name: db.name,
@@ -808,7 +831,7 @@ var search_sohu = function (db, boo) {
               //结果存mongodb
               insert_true(_data)
             }else{
-              console.log('搜狐搜索  ' + q + ' 出错。')
+              // console.log('搜狐搜索  ' + q + ' 出错。')
               var w_data = {
                 filmId: db._id,
                 movie_name: db.name,
@@ -821,7 +844,7 @@ var search_sohu = function (db, boo) {
 
       }
     }else{
-      console.log('搜狐搜索  ' + q + ' 出错。')
+      // console.log('搜狐搜索  ' + q + ' 出错。')
       var w_data = {
         filmId: db._id,
         movie_name: db.name,
@@ -851,7 +874,7 @@ var search_youku = function (db, boo) {
         if(!err && res.statusCode === 200){
             // console.log(url)
             if(body === '\n'){
-                console.log('video 200 null error')
+                // console.log('video 200 null error')
             }else{
                 var video = parseYouku(body)
                 var vid = video.vid
@@ -869,7 +892,7 @@ var search_youku = function (db, boo) {
 
       }
     }else{
-      console.log('优酷搜索  ' + q + ' 出错。')
+      // console.log('优酷搜索  ' + q + ' 出错。')
       var w_data = {
         filmId: db._id,
         movie_name: db.name,
@@ -911,7 +934,7 @@ var search_tudou = function (db) {
 
       }
     }else{
-      console.log('土豆搜索  ' + q + ' 出错。')
+      // console.log('土豆搜索  ' + q + ' 出错。')
       var w_data = {
         filmId: db._id,
         movie_name: db.name,
@@ -961,7 +984,7 @@ var search_mgtv = function (db) {
 
       }
     }else{
-      console.log('芒果搜索  ' + q + ' 出错。')
+      // console.log('芒果搜索  ' + q + ' 出错。')
       var w_data = {
         filmId: db._id,
         movie_name: db.name,
@@ -972,10 +995,43 @@ var search_mgtv = function (db) {
   })
 }
 
+
+var search_cntv = function (db) {
+  var q = db.name
+  var qtext = encodeURIComponent(q)
+  var url = 'http://search.cctv.com/search.php?qtext=' + qtext + '&type=video'
+  request(url, function(err, res, body){
+    if(!err && res.statusCode === 200){
+      var ret = queryCNTV(body, db)
+      var _data = ret[0]
+      // console.log(_data)
+
+      if(_data && _data.info.indexOf('开始播放') > -1){
+        // console.log(_data)
+        store(_data, q)
+        //结果存mongodb
+        insert_true(_data)
+      }else{
+        // console.log('央视搜索  ' + q + ' 出错。')
+        var w_data = {
+          filmId: db._id,
+          movie_name: db.name,
+          videosite: '央视网'
+        }
+        store_false(w_data, q)
+      }
+
+    }else{
+      console.log(err)
+    }
+  })
+}
+
 //搜索剧目信息
 var search = function(db){
 
   async.parallel([
+
     //爱奇艺
     function (cb) {
       search_iqiyi(db)
@@ -1010,7 +1066,13 @@ var search = function(db){
     function (cb) {
       search_mgtv(db)
       cb(null)
-    }
+    },
+
+    // //cntv
+    // function (cb) {
+    //   search_cntv(db)
+    //   cb(null)
+    // }
   ], function(err, results){
 
   })
@@ -1027,7 +1089,7 @@ var dbfind = function () {
       if(err){
         console.log(err)
       }else{
-        console.log('true文件新建成功。')
+        // console.log('true文件新建成功。')
       }
     })
     var filename_false = 'db2vs_false.csv';
@@ -1046,6 +1108,7 @@ var dbfind = function () {
         })
       },
       function (dbs, cb) {
+        // dbs = [{_id:'1234567890', name: '亮剑'}]
         if(dbs.length > 0){
           //定时器
           var rule = new schedule.RecurrenceRule()
@@ -1056,7 +1119,7 @@ var dbfind = function () {
           // console.log(len)
           var timer = schedule.scheduleJob(rule, function () {
             if(dbs[count]){
-              console.log(count)
+              // console.log(count)
               search(dbs[count])
               count++
               if(count === len){

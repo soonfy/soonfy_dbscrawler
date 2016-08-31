@@ -99,7 +99,7 @@ var parseMV = function(vid, filmId, url){
                         cb(null, play, playSum)
                     }
                 }else{
-                        console.log('优酷采集' + filmId + '播放数量出错。')
+                        // console.log('优酷采集' + filmId + '播放数量出错。')
                     }
             })
             timer.cancel()
@@ -118,7 +118,7 @@ var parseMV = function(vid, filmId, url){
                         cb(null, play, playSum, comment, commentSum)
                     }
                 }else{
-                        console.log('优酷采集' + filmId + '评论数量出错。')
+                        // console.log('优酷采集' + filmId + '评论数量出错。')
                     }
             })
             timer.cancel()
@@ -136,13 +136,13 @@ var parseMV = function(vid, filmId, url){
                     var downSum = parseInt($($('div.fn-down')[0]).text().replace(/,/g, ''))
                     cb(null, play, playSum, comment, commentSum, upSum, downSum)
                 }else{
-                        console.log('优酷采集' + filmId + '赞踩数量出错。')
+                        // console.log('优酷采集' + filmId + '赞踩数量出错。')
                     }
             })
             timer.cancel()
           })
         },
-        function(play, playSum, comment, commentSum, upSum, downSum cb){
+        function(play, playSum, comment, commentSum, upSum, downSum, cb){
           var _count
           var _id = '优酷视频' + getTodayid() + filmId
           Count.findOne({_id: _id}, {_id: 1}, function(err, result){
@@ -164,7 +164,7 @@ var parseMV = function(vid, filmId, url){
                   })
                   cb(null)
               }else {
-                  console.log('优酷' + filmId + 'exits.')
+                  // console.log('优酷' + filmId + 'exits.')
               }
           })
         }
@@ -195,7 +195,7 @@ var parseTV = function(url, filmId){
                     // console.log(url)
                     cb(null, body)
                 }else{
-                        console.log('优酷采集' + filmId + '播放网页出错。')
+                        // console.log('优酷采集' + filmId + '播放网页出错。')
                     }
             })
             timer.cancel()
@@ -222,7 +222,7 @@ var parseTV = function(url, filmId){
                             list_data = parseSectionData(body)
                             cb(null, list_data)
                         }else{
-                        console.log('优酷采集' + filmId + '剧集列表出错。')
+                        // console.log('优酷采集' + filmId + '剧集列表出错。')
                     }
                     })
                 })
@@ -258,11 +258,15 @@ var parseTV = function(url, filmId){
                   if(!err && res.statusCode === 200){
                       // console.log(requrl)
                       if(body === '\n'){
-                          console.log('videolist 200 null err')
+                          // console.log('videolist 200 null err')
                       }else{
                           var vid = parseVid(body)
                           var $ = cheerio.load(body)
                           var up = parseInt($($('div.fn-up')[0]).text().replace(/,/g, ''))
+                          if(!up && up !== 0){
+                            // console.log(requrl);
+                            throw new Error($($('div.fn-up')[0]).text().replace(/,/g, ''))
+                          }
                           var down = parseInt($($('div.fn-down')[0]).text().replace(/,/g, ''))
                           var obj_data = {}
                           obj_data.vid = vid
@@ -304,7 +308,7 @@ var parseTV = function(url, filmId){
                         cb(null, obj_data)
                     }
                 }else{
-                        console.log('优酷采集' + filmId + '播放数量出错。')
+                        // console.log('优酷采集' + filmId + '播放数量出错。')
                     }
             })
             timer.cancel()
@@ -333,7 +337,7 @@ var parseTV = function(url, filmId){
                         cb(null, obj_data)
                     }
                 }else{
-                        console.log('优酷采集' + filmId + '评论数量出错。')
+                        // console.log('优酷采集' + filmId + '评论数量出错。')
                     }
             })
             timer.cancel()
@@ -367,7 +371,7 @@ var parseTV = function(url, filmId){
                     })
                     cb(null)
                 }else {
-                    console.log('优酷' + name + 'exits.')
+                    // console.log('优酷' + name + 'exits.')
                 }
             })
         }
@@ -381,7 +385,7 @@ exports.parseYoukuData = function(filmId, url) {
         if(!err && res.statusCode === 200){
             // console.log(url)
             if(body === '\n'){
-                console.log('video 200 null error')
+                // console.log('video 200 null error')
             }else{
                 var video = parseVideo(body)
                 var vid = video.vid
@@ -393,7 +397,7 @@ exports.parseYoukuData = function(filmId, url) {
                 fs.appendFile(path.join(__dirname, 'video', 'videodata_true.csv'), str, function (err) {
                     //
                     if(!err){
-                        console.log(title + ' is appended.') ;
+                        // console.log(title + ' is appended.') ;
                     }
                 })
                 switch(type){
@@ -411,7 +415,7 @@ exports.parseYoukuData = function(filmId, url) {
                         parseTV(curl, filmId)
                         break
                     default:
-                      parseTV(curl, title, utype, type, uid, uname)
+                      parseTV(curl, filmId)
                         // throw new Error('优酷剧目[ ' + title + ' ][ ' + url + '    ]类型 [ ' + type + ' ] 有错误。')
                 }
             }

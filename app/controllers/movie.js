@@ -16,13 +16,15 @@ var schedule = require('node-schedule')
 
 var Movie = require('../models/movie')
 var db2vs = require('../models/db2vs')
+
 var Iqiyi = require('./iqiyi')
 var Letv = require('./letv')
 var Sohu = require('./sohu')
 var QQ = require('./qq')
 var Youku = require('./youku')
-var Mangguo = require('./mangguo')
 var Tudou = require('./tudou')
+var Mangguo = require('./mangguo')
+var CNTV = require('./cntv')
 
 /**
  * 采集数据
@@ -52,7 +54,7 @@ var parseData = function(){
   async.waterfall([
     function (cb) {
       db2vs
-        .find({}, {filmId: 1, url: 1, site: 1, _id: 0}, function (err, dbs) {
+        .find({}, {filmId: 1, url: 1, site: 1, category: 1, _id: 0}, function (err, dbs) {
           if(dbs !== null){
             cb(null, dbs)
           }
@@ -72,32 +74,35 @@ var parseData = function(){
           var site = _data.site
           switch (site) {
             case '爱奇艺视频':
-              Iqiyi.parseIqiyiData(_data.filmId, _data.url)
+              // Iqiyi.parseIqiyiData(_data.filmId, _data.url)
               break;
             case '腾讯视频':
-              QQ.parseQQData(_data.filmId, _data.url)
+              // QQ.parseQQData(_data.filmId, _data.url)
               break;
             case '乐视视频':
-              Letv.parseLetvData(_data.filmId, _data.url)
+              // Letv.parseLetvData(_data.filmId, _data.url)
               break;
             case '搜狐视频':
-              Sohu.parseSohuData(_data.filmId, _data.url)
+              // Sohu.parseSohuData(_data.filmId, _data.url)
               break;
             case '优酷视频':
               Youku.parseYoukuData(_data.filmId, _data.url)
               break;
             case '土豆视频':
-              Tudou.parseTudouData(_data.filmId, _data.url)
+              // Tudou.parseTudouData(_data.filmId, _data.url)
               break;
             case '芒果视频':
-              Mangguo.parseMangguoData(_data.filmId, _data.url)
+              // Mangguo.parseMangguoData(_data.filmId, _data.url)
+              break;
+            case '央视网':
+              // CNTV.parseCNTVData(_data.filmId, _data.url, _data.category)
               break;
             default:
               throw new Error(site + '  is wrong site.')
           }
           count++
           if(count === len){
-            console.log('url walk end.')
+            // console.log('url walk end.')
             timer.cancel()
           }
         }

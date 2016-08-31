@@ -84,7 +84,7 @@ var parseMV = function(pid, vid, url, filmId, tvid){
                     var play = body.substring(pos + 7, body.indexOf(',', pos)).replace(/ /g, '')
                     cb(null, play, playSum)
                 }else{
-                        console.log('搜狐采集' + filmId + '播放数量出错。')
+                        // console.log('搜狐采集' + filmId + '播放数量出错。')
                     }
             })
             timer.cancel()
@@ -103,7 +103,7 @@ var parseMV = function(pid, vid, url, filmId, tvid){
                         cb(null, play, playSum, comment, commentSum)
                     }
                 }else{
-                        console.log('搜狐采集' + filmId + '评论数量出错。')
+                        // console.log('搜狐采集' + filmId + '评论数量出错。')
                     }
             })
             timer.cancel()
@@ -126,7 +126,7 @@ var parseMV = function(pid, vid, url, filmId, tvid){
                         cb(null, play, playSum, comment, commentSum, upSum, downSum)
                     }
                 }else{
-                        console.log('搜狐采集' + filmId + '评论数量出错。')
+                        // console.log('搜狐采集' + filmId + '评论数量出错。')
                     }
             })
             timer.cancel()
@@ -155,7 +155,7 @@ var parseMV = function(pid, vid, url, filmId, tvid){
                   })
                   cb(null)
               }else {
-                  console.log('搜狐' + filmId + 'exits.')
+                  // console.log('搜狐' + filmId + 'exits.')
               }
           })
         }
@@ -193,7 +193,7 @@ var parseTV = function(pid, filmId){
                             cb(null, list_data)
                         }
                     }else{
-                        console.log('搜狐采集' + filmId + '剧集列表出错。')
+                        // console.log('搜狐采集' + filmId + '剧集列表出错。')
                     }
             })
             timer.cancel()
@@ -228,7 +228,7 @@ var parseTV = function(pid, filmId){
                       obj_data.playSum = playSum
                       cb(null, obj_data, tvid)
                   }else{
-                      console.log('搜狐采集' + filmId + '播放数量出错。')
+                      // console.log('搜狐采集' + filmId + '播放数量出错。')
                   }
               })
               count_sohu++
@@ -260,7 +260,7 @@ var parseTV = function(pid, filmId){
                         cb(null, obj_data, tvid)
                     }
                 }else{
-                        console.log('搜狐采集' + filmId + '评论数量出错。')
+                        // console.log('搜狐采集' + filmId + '评论数量出错。')
                     }
             })
             timer.cancel()
@@ -282,7 +282,7 @@ var parseTV = function(pid, filmId){
                         cb(null, _data)
                     }
                 }else{
-                        console.log('搜狐采集' + filmId + '赞踩数量出错。')
+                        // console.log('搜狐采集' + filmId + '赞踩数量出错。')
                     }
             })
             timer.cancel()
@@ -309,7 +309,7 @@ var parseTV = function(pid, filmId){
                   })
                   cb(null)
               }else {
-                  console.log('搜狐' + filmId + 'exits.')
+                  // console.log('搜狐' + filmId + 'exits.')
               }
           })
 
@@ -339,7 +339,7 @@ var parseTV = function(pid, filmId){
                   })
                   cb(null)
               }else {
-                  console.log('搜狐' + name + 'exits.')
+                  // console.log('搜狐' + name + 'exits.')
               }
           })
         }
@@ -381,7 +381,7 @@ var parseZY = function(pid, filmId, cid){
                             cb(null, list_page)
                         }
                     }else{
-                        console.log('搜狐采集' + filmId + '页数列表出错。')
+                        // console.log('搜狐采集' + filmId + '页数列表出错。')
                     }
             })
             timer.cancel()
@@ -408,7 +408,7 @@ var parseZY = function(pid, filmId, cid){
                               cb(null, list_data)
                           }
                       }else{
-                              console.log('搜狐采集' + filmId + '剧集列表出错。')
+                              // console.log('搜狐采集' + filmId + '剧集列表出错。')
                           }
               })
               count_sohu++
@@ -447,7 +447,7 @@ var parseZY = function(pid, filmId, cid){
                       obj_data.playSum = playSum
                       cb(null, obj_data, tvid)
                   }else{
-                      console.log('搜狐采集' + filmId + '播放数量出错。')
+                      // console.log('搜狐采集' + filmId + '播放数量出错。')
                   }
               })
               count_sohu++
@@ -479,7 +479,7 @@ var parseZY = function(pid, filmId, cid){
                         cb(null, obj_data, tvid)
                     }
                 }else{
-                        console.log('搜狐采集' + filmId + '评论数量出错。')
+                        // console.log('搜狐采集' + filmId + '评论数量出错。')
                     }
             })
             timer.cancel()
@@ -503,7 +503,7 @@ var parseZY = function(pid, filmId, cid){
                         cb(null, _data)
                     }
                 }else{
-                        console.log('搜狐采集' + filmId + '赞踩数量出错。')
+                        // console.log('搜狐采集' + filmId + '赞踩数量出错。')
                     }
             })
             timer.cancel()
@@ -530,7 +530,7 @@ var parseZY = function(pid, filmId, cid){
                   })
                   cb(null)
               }else {
-                  console.log('搜狐' + filmId + 'exits.')
+                  // console.log('搜狐' + filmId + 'exits.')
               }
           })
 
@@ -560,7 +560,7 @@ var parseZY = function(pid, filmId, cid){
                   })
                   cb(null)
               }else {
-                  console.log('搜狐' + name + 'exits.')
+                  // console.log('搜狐' + name + 'exits.')
               }
           })
         }
@@ -590,7 +590,7 @@ exports.parseSohuData = function parse(filmId, url) {
                 fs.appendFile(path.join(__dirname, 'video', 'videodata_true.csv'), str, function (err) {
                     //
                     if(!err){
-                        console.log(title + ' is appended.') ;
+                        // console.log(title + ' is appended.') ;
                     }
                 })
                 switch(type){
@@ -613,7 +613,7 @@ exports.parseSohuData = function parse(filmId, url) {
                 fs.appendFile(path.join(__dirname, 'video', 'videodata_false.csv'), str, function (err) {
                     //
                     if(!err){
-                        console.log('the false message is appended.') ;
+                        // console.log('the false message is appended.') ;
                     }
                 })
             }

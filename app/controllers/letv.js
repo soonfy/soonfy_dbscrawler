@@ -76,7 +76,7 @@ var parseMV = function(pid, filmId, vid){
                         cb(null, play, playSum, comment, commentSum)
                     }
                 }else{
-                        console.log('乐视采集' + filmId + '播放评论数量出错。')
+                        // console.log('乐视采集' + filmId + '播放评论数量出错。')
                     }
             })
             timer.cancel()
@@ -94,7 +94,7 @@ var parseMV = function(pid, filmId, vid){
                         cb(null, play, playSum, comment, commentSum, upSum, downSum)
                     }
                 }else{
-                        console.log('乐视采集' + filmId + '赞踩数量出错。')
+                        // console.log('乐视采集' + filmId + '赞踩数量出错。')
                     }
             })
             timer.cancel()
@@ -122,7 +122,7 @@ var parseMV = function(pid, filmId, vid){
                   })
                   cb(null)
               }else {
-                  console.log('乐视' + filmId + 'exits.')
+                  // console.log('乐视' + filmId + 'exits.')
               }
           })
         }
@@ -174,7 +174,7 @@ var parseTV = function(pid, cid, length, filmId){
                           cb(null, list_data)
                       }
                   }else{
-                      console.log('乐视采集' + filmId +  '剧集列表出错。')
+                      // console.log('乐视采集' + filmId +  '剧集列表出错。')
                   }
               })
               count_letv++
@@ -211,7 +211,7 @@ var parseTV = function(pid, cid, length, filmId){
                           cb(null, obj_data)
                       }
                   }else{
-                      console.log('乐视采集' + filmId + '播放评论数量出错。')
+                      // console.log('乐视采集' + filmId + '播放评论数量出错。')
                   }
               })
               count_letv++
@@ -244,7 +244,7 @@ var parseTV = function(pid, cid, length, filmId){
                   })
                   cb(null)
               }else {
-                  console.log('乐视视频' + filmId + 'exits.')
+                  // console.log('乐视视频' + filmId + 'exits.')
               }
           })
 
@@ -274,7 +274,7 @@ var parseTV = function(pid, cid, length, filmId){
                   })
                   cb(null)
               }else {
-                  console.log('乐视视频' + name + 'exits.')
+                  // console.log('乐视视频' + name + 'exits.')
               }
           })
         }
@@ -316,7 +316,7 @@ var parseZY = function(pid, cid, filmId){
                         cb(null, list_year)
                     }
                 }else{
-                        console.log('乐视采集' + filmId + '年代列表出错。')
+                        // console.log('乐视采集' + filmId + '年代列表出错。')
                     }
             })
             timer.cancel()
@@ -346,7 +346,7 @@ var parseZY = function(pid, cid, filmId){
                           cb(null, list_data)
                       }
                   }else{
-                      console.log('乐视采集' + filmId + '剧集列表出错。')
+                      // console.log('乐视采集' + filmId + '剧集列表出错。')
                   }
               })
               count_letv++
@@ -383,7 +383,7 @@ var parseZY = function(pid, cid, filmId){
                           cb(null, obj_data)
                       }
                   }else{
-                      console.log('乐视采集' + filmId + '播放评论数量出错。')
+                      // console.log('乐视采集' + filmId + '播放评论数量出错。')
                   }
               })
               count_letv++
@@ -416,7 +416,7 @@ var parseZY = function(pid, cid, filmId){
                   })
                   cb(null)
               }else {
-                  console.log('乐视视频' + filmId + 'exits.')
+                  // console.log('乐视视频' + filmId + 'exits.')
               }
           })
 
@@ -446,7 +446,7 @@ var parseZY = function(pid, cid, filmId){
                   })
                   cb(null)
               }else {
-                  console.log('乐视视频' + name + 'exits.')
+                  // console.log('乐视视频' + name + 'exits.')
               }
           })
         }
@@ -472,7 +472,7 @@ exports.parseLetvData = function(filmId, url) {
               fs.appendFile(path.join(__dirname, 'video', 'videodata_true.csv'), str, function (err) {
                   //
                   if(!err){
-                      console.log(title + ' is appended.') ;
+                      // console.log(title + ' is appended.') ;
                   }
               })
               switch(type){
@@ -498,7 +498,7 @@ exports.parseLetvData = function(filmId, url) {
               var str = filmId + ',' + 'title' + ',' + 'type' + ',' + url + ','
               fs.appendFile(path.join(__dirname, 'video', 'videodata_false.csv'), str, function (err) {
                 if(!err){
-                    console.log('the false message is appended.') ;
+                    // console.log('the false message is appended.') ;
                 }
               })
             }
