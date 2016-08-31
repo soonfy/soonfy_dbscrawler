@@ -4,13 +4,13 @@ var logger = require('morgan');
 var mongoose = require('mongoose')
 var cookieParser = require('cookie-parser')
 var session = require('express-session')
-// var dbUrl = 'mongodb://localhost/tarantula'
 var mongoStore = require('connect-mongo')(session)
 var port = 3038
 var app = express()
 var bodyParser = require('body-parser');
 
-var dbUrl = 'mongodb://localhost/tarantula_soonfy'
+// var dbUrl = 'mongodb://localhost/tarantula'        //本地
+var dbUrl = 'mongodb://localhost/tarantula_soonfy'    //服务器
 mongoose.connect(dbUrl)
 
 app.set('views', './app/views/pages')
@@ -37,7 +37,7 @@ if ('development' === app.get('env')) {
     app.set('showStackError', true)
     app.use(logger('dev'));
     app.locals.pretty = true
-    // mongoose.set('debug', true)
+    //mongoose.set('debug', true)
 }
 
 require('./config/routes')(app)
