@@ -42,7 +42,7 @@ var countSum = function(){
     function(cb){
       Movie
         .find({site: {'$in': ['爱奇艺视频']}, createdAt: {'$gte': start, '$lt': end}}, {filmId: 1, play: 1, comment: 1, up: 1, down: 1, createdAt: 1, site: 1, _id: 0}, function(err, list_data){
-          console.log(list_data)
+          // console.log(list_data)
           // console.log(results)
           // throw new Error()
           var filmIds = []
@@ -228,7 +228,7 @@ var countSum = function(){
           res.forEach(function (_res, _index) {
             counts = counts.concat(_res)
           })
-          console.log(counts)
+          // console.log(counts)
 
           //写入数据库
           counts.forEach(function (_data) {
