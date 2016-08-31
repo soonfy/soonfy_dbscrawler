@@ -83,6 +83,7 @@ var parseMV = function(pid, filmId){
 
           var timer = schedule.scheduleJob(rule, function () {
             var requrl = 'http://s.video.qq.com/loadplaylist?type=6&plname=qq&otype=json&id=' + pid
+console.log(requrl)
             request(requrl, function(err, res, body){
                 if(!err && res.statusCode === 200){
                     // console.log(requrl)

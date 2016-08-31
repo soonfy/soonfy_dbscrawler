@@ -411,7 +411,7 @@ exports.parseYoukuData = function(filmId, url) {
                         parseTV(curl, filmId)
                         break
                     default:
-                      parseTV(curl, title, utype, type, uid, uname)
+                      parseTV(curl, filmId)
                         // throw new Error('优酷剧目[ ' + title + ' ][ ' + url + '    ]类型 [ ' + type + ' ] 有错误。')
                 }
             }

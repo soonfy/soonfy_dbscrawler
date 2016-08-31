@@ -110,7 +110,7 @@ var parseData = function(){
 
 //测试采集
 
-parseData()
+//parseData()
 
 /**
  * 定时任务，5个小时采集一次

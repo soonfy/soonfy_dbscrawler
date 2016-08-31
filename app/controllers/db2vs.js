@@ -1076,7 +1076,7 @@ var dbfind = function () {
 
 //测试对应数据
 //
-// dbfind()
+dbfind()
 
 /**
  * 执行对应程序
