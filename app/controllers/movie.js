@@ -76,31 +76,31 @@ var parseData = function(){
           var site = _data.site
           switch (site) {
             case '爱奇艺视频':
-              // Iqiyi.parseIqiyiData(_data.filmId, _data.url)
+              Iqiyi.parseIqiyiData(_data.filmId, _data.url)
               break;
             case '腾讯视频':
-              // QQ.parseQQData(_data.filmId, _data.url)
+              QQ.parseQQData(_data.filmId, _data.url)
               break;
             case '乐视视频':
-              // Letv.parseLetvData(_data.filmId, _data.url)
+              Letv.parseLetvData(_data.filmId, _data.url)
               break;
             case '搜狐视频':
-              // Sohu.parseSohuData(_data.filmId, _data.url)
+              Sohu.parseSohuData(_data.filmId, _data.url)
               break;
             case '优酷视频':
               Youku.parseYoukuData(_data.filmId, _data.url)
               break;
             case '土豆视频':
-              // Tudou.parseTudouData(_data.filmId, _data.url)
+              Tudou.parseTudouData(_data.filmId, _data.url)
               break;
             case '芒果视频':
-              // Mangguo.parseMangguoData(_data.filmId, _data.url)
+              Mangguo.parseMangguoData(_data.filmId, _data.url)
               break;
             case '央视网':
               // CNTV.parseCNTVData(_data.filmId, _data.url, _data.category)
               break;
             default:
-              throw new Error(site + '  is wrong site.')
+              // throw new Error(site + '  is wrong site.')
           }
           count++
           if(count === len){
@@ -117,7 +117,7 @@ var parseData = function(){
 
 //测试采集
 
-parseData()
+// parseData()
 
 /**
  * 定时任务，5个小时采集一次
