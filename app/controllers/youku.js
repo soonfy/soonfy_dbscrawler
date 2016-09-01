@@ -265,7 +265,7 @@ var parseTV = function(url, filmId){
                           var up = parseInt($($('div.fn-up')[0]).text().replace(/,/g, ''))
                           if(!up && up !== 0){
                             // console.log(requrl);
-                            throw new Error($($('div.fn-up')[0]).text().replace(/,/g, ''))
+                            // throw new Error($($('div.fn-up')[0]).text().replace(/,/g, ''))
                           }
                           var down = parseInt($($('div.fn-down')[0]).text().replace(/,/g, ''))
                           var obj_data = {}
