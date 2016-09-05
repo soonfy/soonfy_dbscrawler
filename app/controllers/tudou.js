@@ -219,6 +219,7 @@ var parseTV = function(url, filmId){
           _id = '土豆视频' + getTodayid() + filmId + name
           var _movie
           Movie.findOne({_id: _id}, {_id: 1}, function(err, result){
+            console.log(result)
               if(result === null){
                   _movie = new Movie({
                       name: name,
