@@ -232,6 +232,7 @@ var parseTV = function(url, filmId){
                   _movie.save(function(err) {
                       if (err) {
                           console.log(err);
+                          throw new Error(235)
                       }
                   })
               }else {
@@ -254,6 +255,7 @@ var parseTV = function(url, filmId){
                   _count.save(function(err) {
                       if (err) {
                           console.log(err);
+                          throw new Error(258)
                       }
                   })
               }else {
